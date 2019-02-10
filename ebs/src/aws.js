@@ -1,5 +1,5 @@
 const https = require('https');
-const AWS = require('aws-sdk');
+const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
 if (process.env.IS_OFFLINE) {
   AWS.config.dynamodb = {

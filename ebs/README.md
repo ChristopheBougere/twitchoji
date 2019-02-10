@@ -7,11 +7,16 @@ npm install
 
 ## Deploy
 ```bash
-npx serverless deploy
+npm run deploy
+```
+
+## Lint
+```bash
+npm run lint
+npm run lint-fix
 ```
 
 ## Run locally
 ```bash
-npx serverless dynamodb install # Only the first time
-npx serverless offline start
+npm start
 ```

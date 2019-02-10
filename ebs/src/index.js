@@ -1,16 +1,17 @@
 const broadcastAverageMood = require('./broadcast-average-mood');
 const postMood = require('./post-mood');
 
-async function scheduleHandler(event) {
+function scheduleHandler() {
   let i = 0;
   const interval = setInterval(async () => {
     i += 1;
     console.log(`Iteration ${i}`);
     await broadcastAverageMood();
     if (i === 60) {
-      clearInterval(i);
+      clearInterval(interval);
     }
   }, 1000);
+  return {};
 }
 
 async function apiHandler(event) {
@@ -57,10 +58,11 @@ async function apiHandler(event) {
 async function handler(event, context) {
   console.log(event, context);
   if (event.source === 'aws.events') {
-    return await scheduleHandler(event);
-  } else {
-    return await apiHandler(event);
+    const res = await scheduleHandler();
+    return res;
   }
+  const res = await apiHandler(event);
+  return res;
 }
 
 module.exports = handler;

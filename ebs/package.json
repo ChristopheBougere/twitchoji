@@ -4,7 +4,11 @@
   "description": "Real time feedback extension for Twitch",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "npx serverless deploy",
+    "lint": "npx eslint src",
+    "lint-fix": "npx eslint src --fix",
+    "postinstall": "npx serverless dynamodb install",
+    "start": "npx serverless offline start"
   },
   "repository": {
     "type": "git",
@@ -20,6 +24,10 @@
   },
   "homepage": "https://github.com/ChristopheBougere/twitchoji#readme",
   "devDependencies": {
+    "aws-sdk": "^2.400.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "serverless": "^1.37.0",
     "serverless-dynamodb-local": "^0.2.35",
     "serverless-offline": "^4.3.0",

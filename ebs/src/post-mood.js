@@ -11,7 +11,7 @@ const allowedRoles = [
   'moderator',
   'viewer',
 ];
-allowedMoods = [
+const allowedMoods = [
   'neutral',
   'happy',
   'sad',
@@ -35,20 +35,20 @@ async function postMood(body) {
       role,
       user_id: userId,
     } = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }));
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     throw new Error('INVALID_TOKEN');
   }
   if (!allowedRoles.includes(role)) {
     throw new Error('INVALID_ROLE');
   }
-  console.log(`Authorized user.`);
-  if (Object.keys(mood).some(mood => !allowedMoods.includes(mood))) {
-    console.log(`Invalid moon name: ${JSON.stringify(moods, null, 2)}`);
+  console.log('Authorized user.');
+  if (Object.keys(mood).some(m => !allowedMoods.includes(m))) {
+    console.log(`Invalid moon name: ${JSON.stringify(mood, null, 2)}`);
     throw new Error('INVALID_MOOD_NAME');
   }
-  if (Object.values(mood).some(mood => typeof mood !== 'number') || mood < 0 || mood > 1) {
-    console.log(`Invalid moon value: ${JSON.stringify(moods, null, 2)}`);
+  if (Object.values(mood).some(m => typeof m !== 'number' || m < 0 || m > 1)) {
+    console.log(`Invalid moon value: ${JSON.stringify(mood, null, 2)}`);
     throw new Error('INVALID_MOOD_VALUE');
   }
   const datetime = new Date().toISOString();
