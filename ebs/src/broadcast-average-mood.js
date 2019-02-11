@@ -51,17 +51,19 @@ async function makeRequest(streamId, averageMood) {
 async function broadcastAverageMood() {
   // 1. Fetch last items from DynamoDB
   const fromDate = new Date();
-  fromDate.setSeconds(fromDate.getSeconds - RANGE_SECONDS);
+  fromDate.setSeconds(fromDate.getSeconds() - RANGE_SECONDS);
 
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
   const items = [];
   let lastEvaluatedKey;
   do {
     // eslint-disable-next-line no-await-in-loop
-    const { Items, LastEvaluatedKey } = await dynamoDoc.query({
+    const { Items, LastEvaluatedKey } = await dynamoDoc.scan({
       TableName: TABLE_NAME,
-      IndexName: 'gsi-datetime',
-      KeyConditionExpression: 'gsi-datetime >= :datetime',
+      // TODO need to use query
+      // IndexName: 'gsi-datetime',
+      // KeyConditionExpression: '#datetime >= :datetime',
+      FilterExpression: '#datetime >= :datetime',
       ExpressionAttributeNames: {
         '#datetime': 'datetime',
       },
