@@ -11,7 +11,6 @@ function log(message) {
 }
 
 twitch.onContext(function(c) {
-  log(c);
   context = c;
 });
 
@@ -26,13 +25,21 @@ twitch.onAuthorized(function(auth) {
   // startFaceApi();
 });
 
+function detection() {
+  return faceapi.detectSingleFace(document.getElementById('webcam'), new faceapi.TinyFaceDetectorOptions({
+    inputSize: 224,
+    scoreThreshold: 0.5,
+  }))
+    .then(function (res) {
+      log(res);
+      return detection();
+    });
+}
+
 function startFaceApi() {
   faceapi.loadFaceExpressionModel('/models')
     .then(function () {
       return faceapi.loadTinyFaceDetectorModel('/models');
-    })
-    .then(function () {
-      return faceapi.loadSsdMobilenetv1Model('/models');
     })
     .then(function () {
       return navigator.mediaDevices.getUserMedia({
@@ -41,57 +48,10 @@ function startFaceApi() {
       });
     })
     .then(function(stream) {
-      var el = document.getElementById('webcam');
-      el.srcObject = stream;
-      return faceapi.detectAllFaces(el, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.1 }));
+      document.getElementById('webcam').srcObject = stream;
     })
-    .then(function (res) {
-      log(2)
-      log(res);
-    })
+    .then(detection)
     .catch(function (error) {
-      log("error");
       log(error);
     });
 }
-
-// function startFaceApi() {
-//   twitch.rig.log(`hello`)
-//   faceapi.loadFaceExpressionModel('/models')
-//     .catch(function (err) {
-//       twitch.rig.log('0');
-//       console.log('0');
-//     })
-//     .then(() => new Promise(function(resolve, reject) {
-//       navigator.getUserMedia({
-//         video: true,
-//         audio: false,
-//       }, resolve, reject);
-//     }))
-//     .catch(function (err) {
-//       twitch.rig.log('1');
-//       console.error(err);
-//     })
-//     .then(function (stream) {
-//       twitch.rig.log('plop');
-//       var el = document.getElementById('webcam');
-//       el.srcObj = stream;
-//       return faceapi.detectSingleFace(el).withFaceExpressions();
-//     })
-//     .catch(function (err) {
-//       twitch.rig.log('2');
-//       console.log('2');
-//     })
-//     .then(function (result) {
-//       twitch.rig.log(JSON.stringify(result, null, 2));
-//     })
-//     .catch(function (err) {
-//       twitch.rig.log('3');
-//       console.log('3');
-//     });
-// }
-
-
-// // $(function() {
-// //   
-// // });
