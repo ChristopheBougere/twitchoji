@@ -11,7 +11,6 @@ function log(message) {
 }
 
 twitch.onContext(function(c) {
-  log(c);
   context = c;
 });
 
