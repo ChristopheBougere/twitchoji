@@ -1,0 +1,43 @@
+{
+  "name": "twitchoji-ebs",
+  "version": "1.0.0",
+  "description": "Real time feedback extension for Twitch",
+  "main": "src/index.js",
+  "scripts": {
+    "deploy": "npx serverless deploy",
+    "lint": "npx eslint src",
+    "lint-fix": "npx eslint src --fix",
+    "postinstall": "npx serverless dynamodb install",
+    "start": "npx serverless offline start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChristopheBougere/twitchoji.git"
+  },
+  "keywords": [
+    "twitch"
+  ],
+  "author": "Christophe Bougère <christophe.bougere@gmail.com>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ChristopheBougere/twitchoji/issues"
+  },
+  "homepage": "https://github.com/ChristopheBougere/twitchoji#readme",
+  "devDependencies": {
+    "aws-sdk": "^2.400.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "serverless": "^1.37.0",
+    "serverless-dynamodb-local": "^0.2.35",
+    "serverless-offline": "^4.3.0",
+    "serverless-plugin-epsagon": "^1.4.10"
+  },
+  "dependencies": {
+    "epsagon": "^1.11.1",
+    "jsonwebtoken": "^8.4.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5",
+    "uuid": "^3.3.2"
+  }
+}

@@ -1,0 +1,88 @@
+service: twitchoji-ebs
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  deploymentBucket:
+    name: twitchoji-deployment
+    serverSideEncryption: AES256
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:Scan
+      Resource:
+        - ${self:custom.moodsTableArn}
+        - Fn::Join:
+            - '/'
+            - - ${self:custom.moodsTableArn}
+              - '*'
+
+plugins:
+  - serverless-plugin-epsagon
+  - serverless-dynamodb-local
+  - serverless-offline
+
+functions:
+  moods:
+    handler: src/index.handler
+    memorySize: 128
+    timeout: 65 # 60 iterations of 1 second + some room
+    environment:
+      TABLE_NAME: ${self:custom.moodsTableName}
+      JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
+      RANGE_SECONDS: 2
+      TWITCH_CLIENT_ID: hidden
+      TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions/
+      TWITCH_OWNER_ID: hidden
+    events:
+      - http:
+          path: moods
+          method: post
+          cors: true
+      - schedule: rate(1 minute)
+
+package:
+  exclude:
+    - .dynamodb/**
+
+custom:
+  epsagon:
+    token: hidden
+    appName: ${self:service}
+  moodsTableArn:
+    Fn::GetAtt: [MoodsTable, Arn]
+  moodsTableName:
+    Ref: MoodsTable
+  dynamodb:
+    start:
+      port: 8001
+      inMemory: true
+      migrate: true
+
+resources:
+  Resources:
+    MoodsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-moods
+        SSESpecification:
+          SSEEnabled: true
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: datetime
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: gsi-datetime
+            KeySchema:
+              - AttributeName: datetime
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
