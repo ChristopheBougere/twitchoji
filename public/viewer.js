@@ -23,7 +23,7 @@ twitch.onAuthorized(function(auth) {
     log('Received average mood broadcast:', content);
     // TODO display emoji
   });
-  startFaceApi();
+  // startFaceApi();
 });
 
 function startFaceApi() {
