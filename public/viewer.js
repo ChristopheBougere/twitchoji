@@ -1,4 +1,4 @@
-var EBS_ENDPOINT = 'https://hqxlpoil6c.execute-api.us-east-1.amazonaws.com/dev/moods';
+var EBS_ENDPOINT = 'https://ow7zib97nl.execute-api.us-east-1.amazonaws.com/experiment/moods';
 var twitch = window.Twitch.ext;
 var context;
 var token;
