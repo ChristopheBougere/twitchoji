@@ -1,27 +1,6 @@
-const broadcastAverageMood = require('./broadcast-average-mood');
 const postMood = require('./post-mood');
 
-async function broadcastHandler(event, context) {
-  console.log(event, context);
-  await new Promise((resolve) => {
-    let i = 0;
-    const interval = setInterval(async () => {
-      i += 1;
-      console.log(`Iteration ${i}`);
-      try {
-        await broadcastAverageMood();
-      } catch (e) {
-        console.error(e);
-      }
-      if (i === 60) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 1000);
-  });
-}
-
-async function apiHandler(event, context) {
+async function handler(event, context) {
   console.log(event, context);
   try {
     const {
@@ -56,8 +35,6 @@ async function apiHandler(event, context) {
       case 'INVALID_PATH':
       case 'INVALID_TOKEN':
       case 'INVALID_ROLE':
-      case 'INVALID_MOOD_NAME':
-      case 'INVALID_MOOD_VALUE':
         message = e.name;
         break;
       default:
@@ -78,6 +55,5 @@ async function apiHandler(event, context) {
 }
 
 module.exports = {
-  broadcastHandler,
-  apiHandler,
+  handler,
 };
