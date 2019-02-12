@@ -19,6 +19,13 @@ provider:
             - '/'
             - - ${self:custom.moodsTableArn}
               - '*'
+  environment:
+    TABLE_NAME: ${self:custom.moodsTableName}
+    JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
+    RANGE_SECONDS: 2
+    TWITCH_CLIENT_ID: hidden
+    TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions/
+    TWITCH_OWNER_ID: hidden
 
 plugins:
   - serverless-plugin-epsagon
@@ -26,22 +33,19 @@ plugins:
   - serverless-offline
 
 functions:
-  moods:
-    handler: src/index.handler
+  moods-api:
+    handler: src/index.apiHandler
     memorySize: 128
-    timeout: 65 # 60 iterations of 1 second + some room
-    environment:
-      TABLE_NAME: ${self:custom.moodsTableName}
-      JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
-      RANGE_SECONDS: 2
-      TWITCH_CLIENT_ID: hidden
-      TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions/
-      TWITCH_OWNER_ID: hidden
     events:
       - http:
           path: moods
           method: post
           cors: true
+  moods-broadcast:
+    handler: src/index.broadcastHandler
+    memorySize: 128
+    timeout: 65 # 60 iterations of 1 second + some room
+    events:
       - schedule: rate(1 minute)
 
 package:

@@ -1,8 +1,8 @@
 const broadcastAverageMood = require('./broadcast-average-mood');
 const postMood = require('./post-mood');
 
-async function scheduleHandler() {
-  // TODO we are not waiting
+async function broadcastHandler(event, context) {
+  console.log(event, context);
   await new Promise((resolve) => {
     let i = 0;
     const interval = setInterval(async () => {
@@ -21,7 +21,8 @@ async function scheduleHandler() {
   });
 }
 
-async function apiHandler(event) {
+async function apiHandler(event, context) {
+  console.log(event, context);
   try {
     const {
       requestContext: { resourcePath },
@@ -49,10 +50,24 @@ async function apiHandler(event) {
     };
   } catch (e) {
     console.error(e);
+    let message;
+    switch (e.name) {
+      case 'INVALID_HTTP_METHOD':
+      case 'INVALID_PATH':
+      case 'INVALID_TOKEN':
+      case 'INVALID_ROLE':
+      case 'INVALID_MOOD_NAME':
+      case 'INVALID_MOOD_VALUE':
+        message = e.name;
+        break;
+      default:
+        message = 'INTERNAL_ERROR';
+        break;
+    }
     return {
       statusCode: 500,
       body: JSON.stringify({
-        message: 'Internal error.',
+        message,
       }),
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -62,16 +77,7 @@ async function apiHandler(event) {
   }
 }
 
-async function handler(event, context) {
-  console.log(event, context);
-  if (event.source === 'aws.events') {
-    const res = await scheduleHandler();
-    return res;
-  }
-  const res = await apiHandler(event);
-  return res;
-}
-
 module.exports = {
-  handler,
+  broadcastHandler,
+  apiHandler,
 };

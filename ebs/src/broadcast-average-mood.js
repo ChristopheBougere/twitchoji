@@ -18,14 +18,14 @@ async function makeRequest(streamId, averageMood) {
     channel_id: streamId,
     user_id: TWITCH_OWNER_ID,
     pubsub_perms: {
-      send: ['*'],
+      send: ['broadcast'],
     },
     exp: Math.floor(Date.now() / 1000) + 30,
-  }, JWT_SECRET, {
+  }, Buffer.from(JWT_SECRET, 'base64'), {
     algorithm: 'HS256',
   });
 
-  // Publish to 'average-mood' topic
+  // Broadcast
   try {
     const response = await rp(`${TWITCH_API_ENDPOINT}/message/${streamId}`, {
       method: 'POST',
@@ -37,11 +37,13 @@ async function makeRequest(streamId, averageMood) {
       body: JSON.stringify({
         content_type: 'application/json',
         message: JSON.stringify(averageMood),
-        targets: ['average-mood'],
+        targets: ['broadcast'],
       }),
+      resolveWithFullResponse: true,
     });
+    console.log('Received response:', response);
     if (response.statusCode !== 204) {
-      console.error(`Expecting HTTP 204, received ${response.statusCode}. Response: ${JSON.stringify(response, null, 2)}`);
+      console.error(`Expecting HTTP 204, received ${response.statusCode}.`);
     }
   } catch (e) {
     console.error(`Failed to publish for stream ${streamId}`, e);
@@ -89,11 +91,11 @@ async function broadcastAverageMood() {
     if (Object.prototype.hasOwnProperty.call(streams, streamId)) {
       // Compute average mood
       const averageMood = streams[streamId].reduce((acc, curr) => {
-        Object.keys(curr).forEach((mood) => {
+        Object.keys(curr.mood).forEach((mood) => {
           if (!acc[mood]) {
             acc[mood] = 0;
           }
-          acc[mood] += curr[mood];
+          acc[mood] += curr.mood[mood];
         });
         return acc;
       }, {});

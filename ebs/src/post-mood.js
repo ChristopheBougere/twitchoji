@@ -34,7 +34,7 @@ async function postMood(body) {
       opaque_user_id: opaqueUserId,
       role,
       user_id: userId,
-    } = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }));
+    } = jwt.verify(token, Buffer.from(JWT_SECRET, 'base64'), { algorithms: ['HS256'] }));
   } catch (err) {
     console.error(err);
     throw new Error('INVALID_TOKEN');

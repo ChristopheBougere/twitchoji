@@ -1,7 +1,10 @@
+var EBS_ENDPOINT = 'https://hqxlpoil6c.execute-api.us-east-1.amazonaws.com/dev/moods';
 var twitch = window.Twitch.ext;
 var context;
 var token;
 var tuid;
+var detectionInterval;
+var averageMood;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -18,21 +21,44 @@ twitch.onAuthorized(function(auth) {
   token = auth.token;
   tuid = auth.userId;
 
-  twitch.listen('average-mood', function (target, contentType, content) {
-    log('Received average mood broadcast:', content);
+  log('Listening pubsub.');
+  twitch.listen('broadcast', function (target, contentType, content) {
+    log('Received expressions:');
+    averageMood = JSON.parse(content);
+    log(averageMood);
     // TODO display emoji
   });
-  // startFaceApi();
 });
 
 function detection() {
-  return faceapi.detectSingleFace(document.getElementById('webcam'), new faceapi.TinyFaceDetectorOptions({
+  var videoEl = document.getElementById('webcam');
+  if (videoEl.paused || videoEl.ended) {
+    return;
+  }
+  faceapi.detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions({
     inputSize: 224,
     scoreThreshold: 0.5,
-  }))
+  })).withFaceExpressions()
     .then(function (res) {
-      log(res);
-      return detection();
+      if (!token || !res) {
+        return;
+      }
+      var mood = {};
+      res.expressions.forEach(function (m) {
+        mood[m.expression] = m.probability;
+      });
+      return fetch(EBS_ENDPOINT, {
+        method: 'POST',
+        body: JSON.stringify({
+          token: token,
+          mood: mood,
+        }),
+        mode: 'cors',
+      });
+    })
+    .catch(function (err) {
+      log('Detection error:');
+      log(err);
     });
 }
 
@@ -50,8 +76,11 @@ function startFaceApi() {
     .then(function(stream) {
       document.getElementById('webcam').srcObject = stream;
     })
-    .then(detection)
+    .then(function () {
+      detectionInterval = setInterval(detection, 1000);
+    })
     .catch(function (error) {
+      log('Init error:');
       log(error);
     });
 }
