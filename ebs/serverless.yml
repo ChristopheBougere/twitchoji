@@ -12,7 +12,8 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
-        - dynamodb:Scan
+        - dynamodb:UpdateItem
+        - dynamodb:Query
       Resource:
         - ${self:custom.moodsTableArn}
         - Fn::Join:
@@ -24,8 +25,9 @@ provider:
     JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
     RANGE_SECONDS: 2
     TWITCH_CLIENT_ID: hidden
-    TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions/
+    TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions
     TWITCH_OWNER_ID: hidden
+    TWITCH_TEST_STREAM_ID: hidden
 
 plugins:
   - serverless-plugin-epsagon
@@ -34,16 +36,17 @@ plugins:
 
 functions:
   moods-api:
-    handler: src/index.apiHandler
+    handler: src/api/index.handler
     memorySize: 128
+    timeout: 5
     events:
       - http:
           path: moods
           method: post
           cors: true
   moods-broadcast:
-    handler: src/index.broadcastHandler
-    memorySize: 128
+    handler: src/broadcast/index.handler
+    memorySize: 256
     timeout: 65 # 60 iterations of 1 second + some room
     events:
       - schedule: rate(1 minute)
@@ -75,18 +78,13 @@ resources:
         SSESpecification:
           SSEEnabled: true
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: streamId
             AttributeType: S
           - AttributeName: datetime
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: streamId
             KeyType: HASH
-        GlobalSecondaryIndexes:
-          - IndexName: gsi-datetime
-            KeySchema:
-              - AttributeName: datetime
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
+          - AttributeName: datetime
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
