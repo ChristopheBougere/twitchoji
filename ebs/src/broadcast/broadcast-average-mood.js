@@ -13,6 +13,18 @@ const {
 } = process.env;
 
 async function getActiveStreams() {
+  // Generate JWT
+  const token = jwt.sign({
+    role: 'external',
+    user_id: TWITCH_OWNER_ID,
+    pubsub_perms: {
+      send: ['broadcast'],
+    },
+    exp: Math.floor(Date.now() / 1000) + 30,
+  }, Buffer.from(JWT_SECRET, 'base64'), {
+    algorithm: 'HS256',
+  });
+
   try {
     const streams = [];
     let cursor;
@@ -25,6 +37,7 @@ async function getActiveStreams() {
         uri: `${TWITCH_API_ENDPOINT}/${TWITCH_CLIENT_ID}/live_activated_channels`,
         headers: {
           'Client-ID': TWITCH_CLIENT_ID,
+          Authorization: `Bearer: ${token}`,
         },
         qs,
       });
