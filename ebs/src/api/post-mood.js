@@ -1,35 +1,9 @@
-const jwt = require('jsonwebtoken');
 const AWS = require('../lib/aws');
 const { formatDatetime } = require('../lib/datetime');
 
 const {
-  JWT_SECRET,
   TABLE_NAME,
 } = process.env;
-
-// Verify the JWT token and return the current stream ID
-function verifyUser(token) {
-  try {
-    // https://dev.twitch.tv/docs/extensions/reference/#jwt-schema
-    const {
-      channel_id: streamId,
-      role,
-    } = jwt.verify(token, Buffer.from(JWT_SECRET, 'base64'), { algorithms: ['HS256'] });
-
-    const allowedRoles = [
-      'moderator',
-      'viewer',
-    ];
-    if (!allowedRoles.includes(role)) {
-      throw new Error('INVALID_ROLE');
-    }
-    console.log('Authorized user.');
-    return streamId;
-  } catch (err) {
-    console.error(err);
-    throw new Error('INVALID_TOKEN');
-  }
-}
 
 async function writeMood(mood, streamId) {
   // Check if item already exist
@@ -100,9 +74,7 @@ async function writeMood(mood, streamId) {
   }
 }
 
-async function postMood(body) {
-  const streamId = verifyUser(body.token);
-
+async function postMood(body, streamId) {
   const mood = {
     neutral: body.mood.neutral || 0,
     happy: body.mood.happy || 0,
