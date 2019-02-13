@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const AWS = require('../lib/aws');
+const { formatDatetime } = require('../lib/datetime');
 
 const {
   JWT_SECRET,
@@ -33,7 +34,7 @@ function verifyUser(token) {
 async function writeMood(mood, streamId) {
   // Check if item already exist
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
-  const datetime = new Date().toISOString().substring(0, 19); // Keeping second precision
+  const datetime = formatDatetime(new Date());
   try {
     const item = {
       streamId,
