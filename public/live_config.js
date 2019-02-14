@@ -18,8 +18,12 @@ twitch.onContext(function (c) {
 });
 
 twitch.onAuthorized(function (auth) {
+  console.log("Starting onAuthorized")
   token = auth.token;
   tuid = auth.userId;
+  getHistory()
+  console.log("Ending onAuthorized")
+
 });
 
 function getHistory() {
