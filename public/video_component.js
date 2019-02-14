@@ -25,8 +25,13 @@ twitch.onAuthorized(function(auth) {
   twitch.listen('broadcast', function (target, contentType, content) {
     log('Received expressions:');
     averageMood = JSON.parse(content);
-    log(averageMood);
-    // TODO display emoji
+    delete averageMood.number;
+    const highestMood = Object.keys(averageMood).reduce(function(a, b) {
+      return obj[a] > obj[b] ? a : b;
+    });
+    log(highestMood, average[highestMood]);
+    var averageMoodEl = document.getElementById('average-mood');
+    averageMoodEl.innerHTML = '<img src="' + highestMood + '.svg" />';
   });
 });
 
@@ -50,7 +55,7 @@ function detection() {
       return fetch(EBS_ENDPOINT, {
         method: 'POST',
         headers: new Headers({
-          Token: token,
+          token: token,
         }),
         body: JSON.stringify({
           mood: mood,
@@ -85,4 +90,8 @@ function startFaceApi() {
       log('Init error:');
       log(error);
     });
+}
+
+function onEmojiClick(mood) {
+  console.log(mood);
 }
