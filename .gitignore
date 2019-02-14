@@ -1,4 +1,7 @@
 node_modules
 .serverless
 .dynamodb
-epsagon_handlers
+epsagon_handler
+.DS_Store
+Live mood.json
+
