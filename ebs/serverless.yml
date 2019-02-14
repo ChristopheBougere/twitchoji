@@ -44,23 +44,29 @@ functions:
           method: post
           cors:
             origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Token
             allowCredentials: true
       - http:
           path: moods
           method: get
           cors:
             origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - Token
             allowCredentials: true
-  broadcast:
-    handler: src/broadcast/index.handler
-    memorySize: 128
-    timeout: 5
-    events:
-      - stream:
-        type: dynamodb
-        arn:
-          Fn::GetAtt: [ MoodsTable, StreamArn ]
-
 package:
   exclude:
     - .dynamodb/**

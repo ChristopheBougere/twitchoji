@@ -1,8 +1,10 @@
 const AWS = require('../lib/aws');
 const { formatDatetime } = require('../lib/datetime');
+const broadcastAverageMood = require('./broadcast-average-mood');
 
 const {
   TABLE_NAME,
+  RANGE_SECONDS,
 } = process.env;
 
 async function writeMood(mood, streamId) {
@@ -26,7 +28,15 @@ async function writeMood(mood, streamId) {
         '#datetime': 'datetime',
       },
     }).promise();
-    console.log('Item added.');
+    console.log('Item added. Now broadcasting average mood');
+    // Then broadcast average mood
+    const fromDate = new Date(datetime);
+    fromDate.setSeconds(fromDate.getSeconds() - RANGE_SECONDS);
+    console.log(datetime, fromDate);
+    const fromDateStr = formatDatetime(fromDate);
+    console.log(`From date ${fromDateStr}`);
+    await broadcastAverageMood(streamId, fromDateStr);
+    console.log('Broadcast done.')
   } catch (e) {
     if (e.name === 'ConditionalCheckFailedException') {
       console.log('Item already exists. Updating it...');
@@ -74,7 +84,7 @@ async function writeMood(mood, streamId) {
   }
 }
 
-async function postMood(body, streamId) {
+async function postMood(streamId, body) {
   const mood = {
     neutral: body.mood.neutral || 0,
     happy: body.mood.happy || 0,

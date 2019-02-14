@@ -36,7 +36,7 @@ async function handler(event, context) {
     const {
       requestContext: { resourcePath },
       httpMethod,
-      headers: { Token: token },
+      headers: { token },
     } = event;
 
     if (!token) {
