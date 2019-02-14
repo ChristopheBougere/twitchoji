@@ -12,14 +12,14 @@
   height: 350px;
 }
 
-#live-mood #average img {
-  width: 350px;
-  height: 350px;
-}
-
 #live-mood #buttons img {
   width: 150px;
   margin-right: 50px;
   margin-bottom: 50px;
   cursor: pointer;
+}
+
+#live-mood #enable-face-tracking {
+  width: 350px;
+  height: 100px
 }

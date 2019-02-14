@@ -31,7 +31,7 @@ twitch.onAuthorized(function(auth) {
     });
     log(highestMood, average[highestMood]);
     var averageMoodEl = document.getElementById('average');
-    averageMoodEl.innerHTML = '<img src="' + highestMood + '.svg" />';
+    averageMoodEl.innerHTML = '<img src="svg/' + highestMood + '.svg" />';
   });
 });
 
