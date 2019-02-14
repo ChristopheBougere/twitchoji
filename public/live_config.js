@@ -34,6 +34,9 @@ function getHistory() {
 }
 
 function displayHistogram(){
+  console.log("Starting displayHistogram")
   getHistory();
+  console.log("Ending displayHistogram")
+
 }
 
