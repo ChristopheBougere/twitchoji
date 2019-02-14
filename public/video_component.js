@@ -27,10 +27,10 @@ twitch.onAuthorized(function(auth) {
     averageMood = JSON.parse(content);
     delete averageMood.number;
     const highestMood = Object.keys(averageMood).reduce(function(a, b) {
-      return obj[a] > obj[b] ? a : b;
+      return averageMood[a] > averageMood[b] ? a : b;
     });
     log(highestMood, average[highestMood]);
-    var averageMoodEl = document.getElementById('average-mood');
+    var averageMoodEl = document.getElementById('average');
     averageMoodEl.innerHTML = '<img src="' + highestMood + '.svg" />';
   });
 });
