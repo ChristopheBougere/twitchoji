@@ -4,56 +4,11 @@ const AWS = require('../lib/aws');
 
 const {
   JWT_SECRET,
-  RANGE_SECONDS,
   TABLE_NAME,
   TWITCH_OWNER_ID,
   TWITCH_API_ENDPOINT,
   TWITCH_CLIENT_ID,
-  TWITCH_TEST_STREAM_ID,
 } = process.env;
-
-async function getActiveStreams() {
-  // Generate JWT
-  const token = jwt.sign({
-    role: 'external',
-    user_id: TWITCH_OWNER_ID,
-    pubsub_perms: {
-      send: ['broadcast'],
-    },
-    exp: Math.floor(Date.now() / 1000) + 30,
-  }, Buffer.from(JWT_SECRET, 'base64'), {
-    algorithm: 'HS256',
-  });
-
-  try {
-    const streams = [];
-    let cursor;
-    do {
-      const qs = {};
-      if (cursor) {
-        qs.cursor = cursor;
-      }
-      const res = await rp({ // eslint-disable-line no-await-in-loop
-        uri: `${TWITCH_API_ENDPOINT}/${TWITCH_CLIENT_ID}/live_activated_channels`,
-        headers: {
-          'Client-ID': TWITCH_CLIENT_ID,
-          Authorization: `Bearer: ${token}`,
-        },
-        qs,
-      });
-      ({ cursor } = res);
-      streams.push(...res.channels.map(s => s.id));
-    } while (cursor);
-
-    return streams;
-  } catch (reason) {
-    if (reason.statusCode === 404) {
-      // Mock for unreleased extensions
-      return [TWITCH_TEST_STREAM_ID];
-    }
-    throw reason;
-  }
-}
 
 async function fetchItems(streamId, fromDate) {
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
@@ -70,7 +25,7 @@ async function fetchItems(streamId, fromDate) {
       },
       ExpressionAttributeValues: {
         ':streamId': streamId,
-        ':datetime': fromDate.toISOString(),
+        ':datetime': fromDate,
       },
     }).promise();
     items.push(...Items);
@@ -154,26 +109,18 @@ async function makeRequest(streamId, averageMood) {
   }
 }
 
-async function broadcastAverageMood() {
-  const fromDate = new Date();
-  fromDate.setSeconds(fromDate.getSeconds() - RANGE_SECONDS);
+async function broadcastAverageMood(streamId, fromDate) {
+  // Fetch last items from DynamoDB
+  console.log(`Stream ${streamId}: fetching items since ${fromDate}`);
+  const items = await fetchItems(streamId, fromDate);
+  console.log(`Stream ${streamId} items: ${JSON.stringify(items, null, 2)}`);
 
-  // Get active streams
-  const activeStreams = await getActiveStreams();
-  console.log(`Active streams: ${activeStreams}`);
-  // For each stream
-  const tasks = activeStreams.map(async (streamId) => {
-    // Fetch last items from DynamoDB
-    const items = await fetchItems(streamId, fromDate);
-    console.log(`Strean ${streamId} items: ${JSON.stringify(items, null, 2)}`);
-    // Compute average mood
-    const averageMood = computeAverageMood(items);
-    console.log(`Stream ${streamId} average mood: ${JSON.stringify(averageMood, null, 2)}`);
-    // Then broadcast using Twitch PubSub
-    await makeRequest(streamId, averageMood);
-  });
+  // Compute average mood
+  const averageMood = computeAverageMood(items);
+  console.log(`Stream ${streamId} average mood: ${JSON.stringify(averageMood, null, 2)}`);
 
-  await Promise.all(tasks);
+  // Then broadcast using Twitch PubSub
+  await makeRequest(streamId, averageMood);
 }
 
 module.exports = broadcastAverageMood;

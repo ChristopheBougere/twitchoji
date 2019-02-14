@@ -27,7 +27,6 @@ provider:
     TWITCH_CLIENT_ID: hidden
     TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions
     TWITCH_OWNER_ID: hidden
-    TWITCH_TEST_STREAM_ID: hidden
 
 plugins:
   - serverless-plugin-epsagon
@@ -35,7 +34,7 @@ plugins:
   - serverless-offline
 
 functions:
-  moods-api:
+  api:
     handler: src/api/index.handler
     memorySize: 128
     timeout: 5
@@ -44,12 +43,19 @@ functions:
           path: moods
           method: post
           cors: true
-  moods-broadcast:
+      - http:
+          path: moods
+          method: get
+          cors: true
+  broadcast:
     handler: src/broadcast/index.handler
-    memorySize: 256
-    timeout: 65 # 60 iterations of 1 second + some room
+    memorySize: 128
+    timeout: 5
     events:
-      - schedule: rate(1 minute)
+      - stream:
+        type: dynamodb
+        arn:
+          Fn::GetAtt: [ MoodsTable, StreamArn ]
 
 package:
   exclude:
@@ -87,4 +93,6 @@ resources:
             KeyType: HASH
           - AttributeName: datetime
             KeyType: RANGE
+        StreamSpecification:
+          StreamViewType: KEYS_ONLY
         BillingMode: PAY_PER_REQUEST
