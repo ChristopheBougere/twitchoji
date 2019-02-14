@@ -18,12 +18,9 @@ twitch.onContext(function (c) {
 });
 
 twitch.onAuthorized(function (auth) {
-  console.log("Starting onAuthorized")
   token = auth.token;
   tuid = auth.userId;
-  getHistory()
-  console.log("Ending onAuthorized")
-
+  displayHistory()
 });
 
 function getHistory() {
@@ -33,10 +30,13 @@ function getHistory() {
        Token: token,
      }),
     mode: 'cors',
-  }).then(function(response) {
-    console.log(response.blob());
-    log(response);
-  });
+  }).then(response => response.json())
+  .then(data => {
+    console.log(data) // Prints result from `response.json()` in getRequest
+    data.map(i => i.dateTime)
+    console.log(data) // Prints result from `response.json()` in getRequest
+  })
+  .catch(error => console.error(error));
 }
 
 function displayHistogram(){
