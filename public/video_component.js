@@ -5,6 +5,8 @@ var token;
 var tuid;
 var detectionInterval;
 var averageMood;
+var videoEl = document.getElementById('webcam');
+var averageMoodEl = document.getElementById('average-mood');
 
 function log(message) {
   if (typeof message === 'string') {
@@ -36,7 +38,6 @@ twitch.onAuthorized(function(auth) {
 });
 
 function detection() {
-  var videoEl = document.getElementById('webcam');
   if (videoEl.paused || videoEl.ended) {
     return;
   }
@@ -81,7 +82,7 @@ function startFaceApi() {
       });
     })
     .then(function(stream) {
-      document.getElementById('webcam').srcObject = stream;
+      videoEl.srcObject = stream;
     })
     .then(function () {
       detectionInterval = setInterval(detection, 1000);
