@@ -43,6 +43,10 @@ functions:
           path: moods
           method: post
           cors: true
+      - http:
+          path: moods
+          method: get
+          cors: true
   broadcast:
     handler: src/broadcast/index.handler
     memorySize: 128

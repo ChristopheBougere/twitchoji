@@ -36,7 +36,7 @@ async function handler(event, context) {
     const {
       requestContext: { resourcePath },
       httpMethod,
-      headers: { token },
+      headers: { Token: token },
     } = event;
 
     if (!token) {
@@ -70,13 +70,13 @@ async function handler(event, context) {
   } catch (e) {
     console.error(e);
     let message;
-    switch (e.name) {
+    switch (e.message) {
       case 'MISSING_TOKEN':
       case 'INVALID_TOKEN':
       case 'INVALID_ROLE':
       case 'INVALID_HTTP_METHOD':
       case 'INVALID_PATH':
-        message = e.name;
+        ({ message } = e);
         break;
       default:
         message = 'INTERNAL_ERROR';
