@@ -18,6 +18,7 @@ function getStreamIdFromToken(token) {
     const allowedRoles = [
       'moderator',
       'viewer',
+      'broadcaster',
     ];
     if (!allowedRoles.includes(role)) {
       throw new Error('INVALID_ROLE');

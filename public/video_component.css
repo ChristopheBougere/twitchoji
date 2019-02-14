@@ -9,6 +9,12 @@
 
 #live-mood #average {
   width: 350px;
+  height: 350px;
+}
+
+#live-mood #average img {
+  width: 100%;
+  height: 100%;
 }
 
 #live-mood #buttons img {
