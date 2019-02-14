@@ -23,14 +23,16 @@ twitch.onAuthorized(function (auth) {
 });
 
 function getHistory() {
-  var history = fetch(EBS_ENDPOINT, {
+  fetch(EBS_ENDPOINT, {
     method: 'GET',
     headers: new Headers({
        Token: token,
      }),
     mode: 'cors',
+  }).then(function(response) {
+    console.log(response.blob());
+    log(response);
   });
-  log(history);
 }
 
 function displayHistogram(){
