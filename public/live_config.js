@@ -20,7 +20,7 @@ twitch.onContext(function (c) {
 twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
-  displayHistory()
+  displayHistogram()
 });
 
 function getHistory() {
