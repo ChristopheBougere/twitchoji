@@ -5,6 +5,8 @@ var token;
 var tuid;
 var detectionInterval;
 var averageMood;
+var videoEl = document.getElementById('webcam');
+var averageMoodEl = document.getElementById('average-mood');
 
 function log(message) {
   if (typeof message === 'string') {
@@ -25,13 +27,17 @@ twitch.onAuthorized(function(auth) {
   twitch.listen('broadcast', function (target, contentType, content) {
     log('Received expressions:');
     averageMood = JSON.parse(content);
+    delete averageMood.number;
+    const highestMood = Object.keys(averageMood).reduce(function(a, b) {
+      return obj[a] > obj[b] ? a : b;
+    });
+    
     log(averageMood);
-    // TODO display emoji
+    averageMoodEl.innerHTML = '<img src="' + mood + '.svg" />';
   });
 });
 
 function detection() {
-  var videoEl = document.getElementById('webcam');
   if (videoEl.paused || videoEl.ended) {
     return;
   }
@@ -50,7 +56,7 @@ function detection() {
       return fetch(EBS_ENDPOINT, {
         method: 'POST',
         headers: new Headers({
-          Token: token,
+          token: token,
         }),
         body: JSON.stringify({
           mood: mood,
@@ -85,4 +91,8 @@ function startFaceApi() {
       log('Init error:');
       log(error);
     });
+}
+
+function onEmojiClick(mood) {
+  console.log(mood);
 }
