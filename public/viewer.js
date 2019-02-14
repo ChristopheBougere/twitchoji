@@ -49,9 +49,9 @@ function detection() {
       });
       return fetch(EBS_ENDPOINT, {
         method: 'POST',
-        // headers: new Headers({
-        //   Token: token,
-        // }),
+        headers: new Headers({
+          Token: token,
+        }),
         body: JSON.stringify({
           mood: mood,
         }),

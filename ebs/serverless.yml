@@ -42,11 +42,15 @@ functions:
       - http:
           path: moods
           method: post
-          cors: true
+          cors:
+            origin: '*'
+            allowCredentials: true
       - http:
           path: moods
           method: get
-          cors: true
+          cors:
+            origin: '*'
+            allowCredentials: true
   broadcast:
     handler: src/broadcast/index.handler
     memorySize: 128
