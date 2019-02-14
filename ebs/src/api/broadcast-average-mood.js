@@ -45,9 +45,8 @@ function computeAverageMood(items) {
     disgusted: 0,
     surprised: 0,
   };
-  let number = 0;
   const averageMood = items.reduce((acc, curr) => {
-    number += curr.number;
+    acc.number += curr.number;
     acc.neutral += curr.mood.neutral;
     acc.happy += curr.mood.happy;
     acc.sad += curr.mood.neutral;
@@ -58,14 +57,14 @@ function computeAverageMood(items) {
     return acc;
   }, inital);
 
-  if (number) {
-    averageMood.neutral /= number;
-    averageMood.happy /= number;
-    averageMood.sad /= number;
-    averageMood.angry /= number;
-    averageMood.fearful /= number;
-    averageMood.disgusted /= number;
-    averageMood.surprised /= number;
+  if (averageMood.number) {
+    averageMood.neutral /= averageMood.number;
+    averageMood.happy /= averageMood.number;
+    averageMood.sad /= averageMood.number;
+    averageMood.angry /= averageMood.number;
+    averageMood.fearful /= averageMood.number;
+    averageMood.disgusted /= averageMood.number;
+    averageMood.surprised /= averageMood.number;
   }
   return averageMood;
 }
