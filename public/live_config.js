@@ -23,7 +23,7 @@ twitch.onAuthorized(function (auth) {
   twitch.listen('broadcast', function (target, contentType, content) {
     log('Received expressions:');
     averageMood = JSON.parse(content);
-    displayBarChar(averageMood)
+    displayBarChar(averageMood);
   });
 });
 
@@ -44,9 +44,9 @@ function getHistory() {
 }
 
 function displayBarChar(averageMood) {  
-  console.log("Starting displayHistogram");
+  log("Starting displayHistogram");
   var json = remap(averageMood);
-  console.log("averageMood " + json);
+  log("averageMood " + json);
   var chart = dc.barChart("#barChar");
 
   d3.json(json).then(function (moods) {
@@ -68,7 +68,7 @@ function displayBarChar(averageMood) {
     chart.render();
   });
 
-console.log("Ending displayHistogram");
+log("Ending displayHistogram");
 }
 
 function remap(input){
