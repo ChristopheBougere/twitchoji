@@ -16,6 +16,7 @@ function log(message) {
 
 twitch.onAuthorized(function (auth) {
   token = auth.token;
+  console.log('Token', token);
 
   log('Listening pubsub.');
   twitch.listen('broadcast', function (target, contentType, content) {
