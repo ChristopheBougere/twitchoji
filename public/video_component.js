@@ -89,7 +89,7 @@ function startFaceApi() {
     .then(function(stream) {
       videoEl.srcObject = stream;
       document.getElementById('buttons').style.display = 'none';
-      document.getElementById('enable-face-tracking').style.display = 'none';
+      document.getElementById('start-button').style.display = 'none';
     })
     .then(function () {
       detectionInterval = setInterval(detection, 1000);
@@ -100,6 +100,27 @@ function startFaceApi() {
     });
 }
 
+function stopFaceApi() {
+  clearInterval(detectionInterval);
+}
+
 function onEmojiClick(mood) {
   console.log(mood);
 }
+
+navigator.mediaDevices.enumerateDevices()
+  .then(function (res) {
+    var hasCameraAccess = res.find(function (item) {
+      return item.kind === 'videoinput';
+    });
+    if (hasCameraAccess) {
+      document.getElementById('start-button').style.display = 'block';
+    } else {
+      return Promise.reject(new Error('NO_CAMERA'));
+    }
+  })
+  .catch(function (err) {
+    log('User has no access to camera.');
+    log(err);
+
+  });

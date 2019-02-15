@@ -7,19 +7,26 @@
   width: 100%;
 }
 
-#live-mood #average {
+#average {
   width: 350px;
   height: 350px;
 }
 
-#live-mood #buttons img {
+#buttons img {
   width: 150px;
   margin-right: 50px;
   margin-bottom: 50px;
   cursor: pointer;
 }
 
-#live-mood #enable-face-tracking {
+#start-button {
   width: 350px;
-  height: 100px
+  height: 100px;
+  display: none;
+}
+
+#stop-button {
+  width: 350px;
+  height: 100px;
+  display: none;
 }
