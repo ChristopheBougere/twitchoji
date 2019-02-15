@@ -25,6 +25,7 @@ twitch.onContext(function (c) {
 twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
+  displayChartLine();
   twitch.listen('broadcast', function (target, contentType, content) {
     log(content);
     averageMood = JSON.parse(content);
@@ -71,7 +72,7 @@ function displayChartBar(averageMood, userNumber) {
       .barPadding(0.1)
       .outerPadding(0.05)
       .group(sumGroup);
-      chartBar.render();
+    chartBar.render();
   } else {
     ndx.remove();
     ndx.add(json);
@@ -83,40 +84,34 @@ function displayChartBar(averageMood, userNumber) {
   log("Ending displayChartBar");
 }
 
-function displayChartLine(){
+function displayChartLine() {
   log("Starting displayChartLine");
-
-  if(!chartMove){
-    chartBar = dc.lineChart('#chartLine');
-    var history = getHistory();
-    ndx = crossfilter(history);
-    moodDimension = ndx.dimension(function (d) { return d.expression; });
-    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
-    initChartBar ();
-    initChartVolume ();
-  }
+  chartBar = dc.lineChart('#chartLine');
+  var history = getHistory();
+  log(JSON.stringify(history));
+  initChartVolume(history);
 
   log("Ending displayChartLine");
 
 }
 
-function initChartVolume(history){
+function initChartVolume(history) {
   ndx = crossfilter(history);
-  moodDimension = ndx.dimension(function (d) { return d.expression; });
+  moodDimension = ndx.dimension(function (d) { return d.date; });
   sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
 
   volumeChart = dc.volumeChart('#chartVolume');
   volumeChart.width(990) /* dc.barChart('#monthly-volume-chart', 'chartGroup'); */
-  .height(40)
-  .margins({top: 0, right: 50, bottom: 20, left: 40})
-  .dimension(moveMonths)
-  .group(volumeByMonthGroup)
-  .centerBar(true)
-  .gap(1)
-  .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-  .round(d3.timeMonth.round)
-  .alwaysUseRounding(true)
-  .xUnits(d3.timeMonths);
+    .height(40)
+    .margins({ top: 0, right: 50, bottom: 20, left: 40 })
+    .dimension(moveMonths)
+    .group(volumeByMonthGroup)
+    .centerBar(true)
+    .gap(1)
+    .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
+    .round(d3.timeMonth.round)
+    .alwaysUseRounding(true)
+    .xUnits(d3.timeMonths);
 }
 function remap(input) {
   return Object.keys(input).map(function (expression) {
