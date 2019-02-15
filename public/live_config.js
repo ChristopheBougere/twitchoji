@@ -5,7 +5,8 @@ var token;
 var tuid;
 var detectionInterval;
 var averageMood;
-var chart;
+var chartBar;
+var chartMove;
 var ndx;
 var moodDimension;
 
@@ -42,24 +43,23 @@ function getHistory() {
     mode: 'cors',
   }).then(response => response.json())
     .then(data => {
-      console.log(data) // Prints result from `response.json()` in getRequest
-      data.map(i => i.dateTime)
-      console.log(data) // Prints result from `response.json()` in getRequest
+      log(JSON.stringify(data)) // Prints result from `response.json()` in getRequest
+      return data;
     })
     .catch(error => console.error(error));
 }
 
-function displayBarChar(averageMood, userNumber) {
-  log("Starting displayHistogram");
+function displayChartBar(averageMood, userNumber) {
+  log("Starting displayChartBar");
   var json = remap(averageMood);
   log(JSON.stringify(json, null, 2));
 
-  if (!chart) {
+  if (!chartBar) {
     ndx = crossfilter(json);
     moodDimension = ndx.dimension(function (d) { return d.expression; });
-    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
-    chart = dc.barChart("#barChar");
-    chart
+    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
+    chartBar = dc.barChart("#barChar");
+    chartBar
       .width(null)
       .height(null)
       .x(d3.scaleBand())
@@ -71,18 +71,53 @@ function displayBarChar(averageMood, userNumber) {
       .barPadding(0.1)
       .outerPadding(0.05)
       .group(sumGroup);
-    chart.render();
+      chartBar.render();
   } else {
     ndx.remove();
     ndx.add(json);
     moodDimension = ndx.dimension(function (d) { return d.expression; });
-    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
+    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
     chart.group(sumGroup);
     dc.redrawAll();
   }
-  log("Ending displayHistogram");
+  log("Ending displayChartBar");
 }
 
+function displayChartLine(){
+  log("Starting displayChartLine");
+
+  if(!chartMove){
+    chartBar = dc.lineChart('#chartLine');
+    var history = getHistory();
+    ndx = crossfilter(history);
+    moodDimension = ndx.dimension(function (d) { return d.expression; });
+    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
+    initChartBar ();
+    initChartVolume ();
+  }
+
+  log("Ending displayChartLine");
+
+}
+
+function initChartVolume(history){
+  ndx = crossfilter(history);
+  moodDimension = ndx.dimension(function (d) { return d.expression; });
+  sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
+
+  volumeChart = dc.volumeChart('#chartVolume');
+  volumeChart.width(990) /* dc.barChart('#monthly-volume-chart', 'chartGroup'); */
+  .height(40)
+  .margins({top: 0, right: 50, bottom: 20, left: 40})
+  .dimension(moveMonths)
+  .group(volumeByMonthGroup)
+  .centerBar(true)
+  .gap(1)
+  .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
+  .round(d3.timeMonth.round)
+  .alwaysUseRounding(true)
+  .xUnits(d3.timeMonths);
+}
 function remap(input) {
   return Object.keys(input).map(function (expression) {
     return {
