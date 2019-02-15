@@ -27,4 +27,5 @@
   height: calc(50vw);
   margin: auto;
   display: none;
+  cursor: pointer;
 }

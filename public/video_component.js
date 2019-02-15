@@ -13,13 +13,8 @@ function log(message) {
   console.log(message);
 }
 
-twitch.onContext(function(c) {
-  context = c;
-});
-
-twitch.onAuthorized(function(auth) {
+twitch.onAuthorized(function (auth) {
   token = auth.token;
-  tuid = auth.userId;
 
   log('Listening pubsub.');
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -40,6 +35,22 @@ twitch.onAuthorized(function(auth) {
   });
 });
 
+function postMood(mood) {
+  if (!token) {
+    return Promise.resolve();
+  }
+  return fetch(EBS_ENDPOINT, {
+    method: 'POST',
+    headers: new Headers({
+      token: token,
+    }),
+    body: JSON.stringify({
+      mood: mood,
+    }),
+    mode: 'cors',
+  });
+}
+
 function detection() {
   var videoEl = document.getElementById('webcam');
   if (videoEl.paused || videoEl.ended) {
@@ -50,23 +61,14 @@ function detection() {
     scoreThreshold: 0.5,
   })).withFaceExpressions()
     .then(function (res) {
-      if (!token || !res) {
-        return;
+      if (!res) {
+        return Promise.resolve();
       }
       var mood = {};
       res.expressions.forEach(function (m) {
         mood[m.expression] = m.probability;
       });
-      return fetch(EBS_ENDPOINT, {
-        method: 'POST',
-        headers: new Headers({
-          token: token,
-        }),
-        body: JSON.stringify({
-          mood: mood,
-        }),
-        mode: 'cors',
-      });
+      return postMood(mood);
     })
     .catch(function (err) {
       log('Detection error:');
@@ -109,7 +111,9 @@ function stopFaceApi() {
 }
 
 function onEmojiClick(mood) {
-  console.log(mood);
+  var obj = {};
+  obj[mood] = 1.;
+  postMood(obj);
 }
 
 navigator.mediaDevices.enumerateDevices()
