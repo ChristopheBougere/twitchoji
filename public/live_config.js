@@ -6,6 +6,9 @@ var tuid;
 var detectionInterval;
 var averageMood;
 var chart;
+var ndx;
+var moodDimension;
+
 
 function log(message) {
   if (typeof message === 'string') {
@@ -50,13 +53,12 @@ function displayBarChar(averageMood, userNumber) {
   var json = remap(averageMood);
   log(JSON.stringify(json, null, 2));
 
-  log("chart "+chart);
-  var ndx = crossfilter(json),
-      moodDimension = ndx.dimension(function (d) { return d.expression; }),
-      sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
 
-  if (chart = null) {
-    var chart = dc.barChart("#barChar");
+  if (!chart) {
+    ndx = crossfilter(json);
+    moodDimension = ndx.dimension(function (d) { return d.expression; });
+    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
+    chart = dc.barChart("#barChar");
     chart
       .width(null)
       .height(null)
@@ -71,8 +73,12 @@ function displayBarChar(averageMood, userNumber) {
       .group(sumGroup);
     chart.render();
   } else {
+    ndx.remove();
+    moodDimension = ndx.dimension(function (d) { return d.expression; });
     sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
+    ndx.add(json);
     chart.group(sumGroup);
+    dc.redrawAll();
   }
   log("Ending displayHistogram");
 }
