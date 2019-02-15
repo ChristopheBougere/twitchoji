@@ -5,6 +5,7 @@ var token;
 var tuid;
 var detectionInterval;
 var averageMood;
+var chart;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -21,9 +22,10 @@ twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
   twitch.listen('broadcast', function (target, contentType, content) {
-    log('Received expressions:');
     averageMood = JSON.parse(content);
-    displayBarChar(averageMood);
+    var userNumber = averageMood.number
+    delete averageMood.number;
+    displayBarChar(averageMood, userNumber);
   });
 });
 
@@ -43,31 +45,35 @@ function getHistory() {
     .catch(error => console.error(error));
 }
 
-function displayBarChar(averageMood) {
+function displayBarChar(averageMood, userNumber) {
   log("Starting displayHistogram");
   var json = remap(averageMood);
-  var chart = dc.barChart("#barChar");
-  log(JSON.stringify(json, null, 2));
+  log(chart);
+  if (chart = null) {
+    var chart = dc.barChart("#barChar");
+    log(JSON.stringify(json, null, 2));
 
-  var ndx = crossfilter(json),
-    moodDimension = ndx.dimension(function (d) { return d.expression; }),
-    sumGroup = moodDimension.group().reduceSum(function (d) { return d.value; });
-  log("sumGroup " + sumGroup);
+    var ndx = crossfilter(json),
+      moodDimension = ndx.dimension(function (d) { return d.expression; }),
+      sumGroup = moodDimension.group().reduceSum(function (d) { return d.value / userNumber; });
+    log("sumGroup " + sumGroup);
 
-  chart
-    .width(null)
-    .height(null)
-    .x(d3.scaleBand())
-    .xUnits(dc.units.ordinal)
-    .brushOn(false)
-    .xAxisLabel('Expression')
-    .yAxisLabel('%')
-    .dimension(moodDimension)
-    .barPadding(0.1)
-    .outerPadding(0.05)
-    .group(sumGroup);
-  chart.render();
-
+    chart
+      .width(null)
+      .height(null)
+      .x(d3.scaleBand())
+      .xUnits(dc.units.ordinal)
+      .brushOn(false)
+      .xAxisLabel('Expression')
+      .yAxisLabel('%')
+      .dimension(moodDimension)
+      .barPadding(0.1)
+      .outerPadding(0.05)
+      .group(sumGroup);
+    chart.render();
+  } else {
+    chart.group(sumGroup);
+  }
   log("Ending displayHistogram");
 }
 
