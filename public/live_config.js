@@ -47,7 +47,7 @@ function displayBarChar(averageMood) {
   log("Starting displayHistogram");
   var json = remap(averageMood);
   var chart = dc.barChart("#barChar");
-
+  log(JSON.stringify(json, null, 2));
   d3.json(json).then(function (moods) {
     log("moods " + moods);
 
@@ -69,6 +69,8 @@ function displayBarChar(averageMood) {
       .outerPadding(0.05)
       .group(sumGroup);
     chart.render();
+  }).catch( err =>{
+    log(err);
   });
 
 log("Ending displayHistogram");
