@@ -52,12 +52,11 @@ function displayBarChar(averageMood, userNumber) {
   log("Starting displayHistogram");
   var json = remap(averageMood);
   log(JSON.stringify(json, null, 2));
-
+  ndx = crossfilter(json);
+  moodDimension = ndx.dimension(function (d) { return d.expression; });
+  sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
 
   if (!chart) {
-    ndx = crossfilter(json);
-    moodDimension = ndx.dimension(function (d) { return d.expression; });
-    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
     chart = dc.barChart("#barChar");
     chart
       .width(null)
@@ -73,10 +72,10 @@ function displayBarChar(averageMood, userNumber) {
       .group(sumGroup);
     chart.render();
   } else {
-    //ndx.remove();
-    ndx.add(json);
-    moodDimension = ndx.dimension(function (d) { return d.expression; });
-    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
+    // ndx.remove();
+    // ndx.add(json);
+    // moodDimension = ndx.dimension(function (d) { return d.expression; });
+    // sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
     chart.group(sumGroup);
     dc.redrawAll();
   }
