@@ -46,11 +46,12 @@ function getHistory() {
 function displayBarChar(averageMood) {
   console.log("Starting displayHistogram")
   var chart = dc.barChart("#barChar");
+  var json = remap(averageMood);
 
-  d3.json(averageMood).then(function (moods) {
+  d3.json(json).then(function (moods) {
     var ndx = crossfilter(moods),
-      moodDimension = ndx.dimension(function (d) { return Object.keys(moods); }),
-      sumGroup = moodDimension.group().reduceSum(function (d) { return d[0]; });
+      moodDimension = ndx.dimension(function (d) { return d.expression; }),
+      sumGroup = moodDimension.group().reduceSum(function (d) { return d.value; });
     chart
       .width(768)
       .height(380)
@@ -62,10 +63,19 @@ function displayBarChar(averageMood) {
       .dimension(moodDimension)
       .barPadding(0.1)
       .outerPadding(0.05)
-      .group(moods);
+      .group(sumGroup);
     chart.render();
   });
 
 console.log("Ending displayHistogram");
+}
+
+function remap(input){
+  return Object.keys(input).map(function(expression) {
+    return {
+      expression: expression,
+      value: input[expression],
+    };
+  });
 }
 
