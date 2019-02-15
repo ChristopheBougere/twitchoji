@@ -73,8 +73,8 @@ function displayBarChar(averageMood, userNumber) {
       .group(sumGroup);
     chart.render();
   } else {
-    // ndx.remove();
-    // ndx.add(json);
+    //ndx.remove();
+    ndx.add(json);
     moodDimension = ndx.dimension(function (d) { return d.expression; });
     sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
     chart.group(sumGroup);
