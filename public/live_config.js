@@ -23,7 +23,7 @@ twitch.onAuthorized(function (auth) {
   twitch.listen('broadcast', function (target, contentType, content) {
     log('Received expressions:');
     averageMood = JSON.parse(content);
-    displayHistogram(averageMood)
+    displayBarChar(averageMood)
   });
 });
 
@@ -43,25 +43,29 @@ function getHistory() {
     .catch(error => console.error(error));
 }
 
-function displayHistogram(averageMood) {
+function displayBarChar(averageMood) {
   console.log("Starting displayHistogram")
-  var margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+  var chart = dc.barChart("#barChar");
 
-  var svg = d3.select("#histogram")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
-  var x = d3.scaleLinear()
-    .domain([angry,disgusted,fearful,happy,neutral,sad,surprised])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-    .range([0, width]);
-  svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
-  console.log("Ending displayHistogram")
+  d3.json(averageMood).then(function (moods) {
+    var ndx = crossfilter(moods),
+      moodDimension = ndx.dimension(function (d) { return Object.keys(moods); }),
+      sumGroup = moodDimension.group().reduceSum(function (d) { return d[0]; });
+    chart
+      .width(768)
+      .height(380)
+      .x(d3.scaleBand())
+      .xUnits(dc.units.ordinal)
+      .brushOn(false)
+      .xAxisLabel('Expression')
+      .yAxisLabel('%')
+      .dimension(moodDimension)
+      .barPadding(0.1)
+      .outerPadding(0.05)
+      .group(moods);
+    chart.render();
+  });
+
+console.log("Ending displayHistogram");
 }
 
