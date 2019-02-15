@@ -83,6 +83,8 @@ function startFaceApi() {
     })
     .then(function(stream) {
       videoEl.srcObject = stream;
+      document.getElementById('buttons').style.display = 'none';
+      document.getElementById('enable-face-tracking').style.display = 'none';
     })
     .then(function () {
       detectionInterval = setInterval(detection, 1000);
