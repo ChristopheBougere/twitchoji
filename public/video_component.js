@@ -115,6 +115,7 @@ function onEmojiClick(mood) {
 navigator.mediaDevices.enumerateDevices()
   .then(function (res) {
     var hasCameraAccess = res.find(function (item) {
+      log(item);
       return item.kind === 'videoinput';
     });
     if (hasCameraAccess) {
