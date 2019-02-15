@@ -1,5 +1,5 @@
 #live-mood {
-  margin-left: 50px;
+  width: 100%;
 }
 
 #live-mood video {
@@ -8,25 +8,23 @@
 }
 
 #average {
-  width: 350px;
-  height: 350px;
+  width: 100%;
+  height: calc(100vw);
+}
+
+#buttons {
+  width: 100%;
 }
 
 #buttons img {
-  width: 150px;
-  margin-right: 50px;
-  margin-bottom: 50px;
+  width: 39%; /* don't know why 40% does not work */
+  margin: 5%;
   cursor: pointer;
 }
 
-#start-button {
-  width: 350px;
-  height: 100px;
-  display: none;
-}
-
-#stop-button {
-  width: 350px;
-  height: 100px;
+.start-stop {
+  width: 90%;
+  height: calc(50vw);
+  margin: auto;
   display: none;
 }

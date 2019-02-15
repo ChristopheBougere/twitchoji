@@ -90,6 +90,7 @@ function startFaceApi() {
       videoEl.srcObject = stream;
       document.getElementById('buttons').style.display = 'none';
       document.getElementById('start-button').style.display = 'none';
+      document.getElementById('stop-button').style.display = 'block';
     })
     .then(function () {
       detectionInterval = setInterval(detection, 1000);
@@ -102,6 +103,9 @@ function startFaceApi() {
 
 function stopFaceApi() {
   clearInterval(detectionInterval);
+  document.getElementById('buttons').style.display = 'block';
+  document.getElementById('start-button').style.display = 'block';
+  document.getElementById('stop-button').style.display = 'none';
 }
 
 function onEmojiClick(mood) {
