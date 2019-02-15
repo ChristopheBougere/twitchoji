@@ -8,8 +8,9 @@
 }
 
 #average {
-  width: 100%;
-  height: calc(100vw);
+  width: 90%;
+  height: calc(90vw);
+  margin: auto;
 }
 
 #buttons {
