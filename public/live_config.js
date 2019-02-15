@@ -48,14 +48,14 @@ function getHistory() {
 function displayBarChar(averageMood, userNumber) {
   log("Starting displayHistogram");
   var json = remap(averageMood);
-  log(chart);
+  log("chart "+chart);
   if (chart = null) {
     var chart = dc.barChart("#barChar");
     log(JSON.stringify(json, null, 2));
 
     var ndx = crossfilter(json),
       moodDimension = ndx.dimension(function (d) { return d.expression; }),
-      sumGroup = moodDimension.group().reduceSum(function (d) { return d.value / userNumber; });
+      sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
     log("sumGroup " + sumGroup);
 
     chart
@@ -72,6 +72,7 @@ function displayBarChar(averageMood, userNumber) {
       .group(sumGroup);
     chart.render();
   } else {
+    sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value / userNumber); });
     chart.group(sumGroup);
   }
   log("Ending displayHistogram");
