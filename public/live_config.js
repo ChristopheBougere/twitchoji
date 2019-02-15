@@ -43,10 +43,11 @@ function getHistory() {
     .catch(error => console.error(error));
 }
 
-function displayBarChar(averageMood) {
-  console.log("Starting displayHistogram")
-  var chart = dc.barChart("#barChar");
+function displayBarChar(averageMood) {  
+  console.log("Starting displayHistogram");
   var json = remap(averageMood);
+  console.log("averageMood " + json);
+  var chart = dc.barChart("#barChar");
 
   d3.json(json).then(function (moods) {
     var ndx = crossfilter(moods),
