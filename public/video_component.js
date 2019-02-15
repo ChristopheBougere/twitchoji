@@ -34,7 +34,7 @@ twitch.onAuthorized(function (auth) {
       lastAverageEmojiDate = new Date();
       // If no new emoji in 2 seconds, clear
       setTimeout(function() {
-        if (lastAverageEmojiDate - new Date() >= 2000) {
+        if (new Date() - lastAverageEmojiDate >= 2000) {
           averageMoodEl.innerHTML = '';
         }
       }, 2000);
