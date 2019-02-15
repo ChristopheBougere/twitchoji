@@ -49,11 +49,11 @@ function displayBarChar(averageMood) {
   var chart = dc.barChart("#barChar");
 
   d3.json(json).then(function (moods) {
+    log("moods " + moods);
 
     var ndx = crossfilter(moods),
       moodDimension = ndx.dimension(function (d) { return d.expression; }),
       sumGroup = moodDimension.group().reduceSum(function (d) { return d.value; });
-      log("moods " + moods);
       log("sumGroup " + sumGroup);
 
     chart
