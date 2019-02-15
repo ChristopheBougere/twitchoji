@@ -25,6 +25,7 @@ twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
   twitch.listen('broadcast', function (target, contentType, content) {
+    log(content);
     averageMood = JSON.parse(content);
     var userNumber = averageMood.number
     delete averageMood.number;
