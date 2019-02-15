@@ -55,8 +55,8 @@ function displayBarChar(averageMood) {
   log("sumGroup " + sumGroup);
 
   chart
-    .width(768)
-    .height(380)
+    .width(null)
+    .height(null)
     .x(d3.scaleBand())
     .xUnits(dc.units.ordinal)
     .brushOn(false)
