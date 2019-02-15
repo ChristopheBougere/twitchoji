@@ -5,6 +5,7 @@ var token;
 var tuid;
 var detectionInterval;
 var averageMood;
+var lastAverageEmojiDate;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -30,6 +31,13 @@ twitch.onAuthorized(function (auth) {
     if (highestMood === 'neutral') {
       averageMoodEl.innerHTML = '';
     } else {
+      lastAverageEmojiDate = new Date();
+      // If no new emoji in 2 seconds, clear
+      setTimeout(function() {
+        if (lastAverageEmojiDate - new Date() >= 2000) {
+          averageMoodEl.innerHTML = '';
+        }
+      }, 2000);
       averageMoodEl.innerHTML = '<img src="svg/' + highestMood + '.svg" />';
     }
   });
