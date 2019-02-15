@@ -49,7 +49,7 @@ function computeAverageMood(items) {
     acc.number += curr.number;
     acc.neutral += curr.mood.neutral;
     acc.happy += curr.mood.happy;
-    acc.sad += curr.mood.neutral;
+    acc.sad += curr.mood.sad;
     acc.angry += curr.mood.angry;
     acc.fearful += curr.mood.fearful;
     acc.disgusted += curr.mood.disgusted;

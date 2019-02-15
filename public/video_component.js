@@ -26,12 +26,17 @@ twitch.onAuthorized(function(auth) {
     log('Received expressions:');
     averageMood = JSON.parse(content);
     delete averageMood.number;
+    console.log(averageMood);
     const highestMood = Object.keys(averageMood).reduce(function(a, b) {
       return averageMood[a] > averageMood[b] ? a : b;
     });
     log(highestMood, average[highestMood]);
     var averageMoodEl = document.getElementById('average');
-    averageMoodEl.innerHTML = '<img src="svg/' + highestMood + '.svg" />';
+    if (highestMood === 'neutral') {
+      averageMoodEl.innerHTML = '';
+    } else {
+      averageMoodEl.innerHTML = '<img src="svg/' + highestMood + '.svg" />';
+    }
   });
 });
 
