@@ -40,7 +40,7 @@ twitch.onAuthorized(function (auth) {
 });
 
 async function  initCharts() {
-  var history = getHistory();
+  var history = getHistory('{"operator":">"}');
   // var chartBar = dc.lineChart("#chartLine");
   // var chartRange = dc.lineChart("#chartRange");
   // var fullDomain = [data[0].date, data.slice(-1)[0].date];
@@ -49,8 +49,10 @@ async function  initCharts() {
   // });
 }
 
-async function getHistory() {
-  await fetch(EBS_ENDPOINT, {
+async function getHistory(params) {
+  var url = new URL(EBS_ENDPOINT);
+  url.search = new URLSearchParams(params)
+  await fetch(url, {
     method: 'GET',
     headers: new Headers({
       Token: token,
