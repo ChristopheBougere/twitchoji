@@ -26,6 +26,7 @@ twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
   if (!chartBar) {
+    console.log("Init Charts")
     initCharts(averageMood, userNumber);
   }
 
