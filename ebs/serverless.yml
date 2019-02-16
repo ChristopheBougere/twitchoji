@@ -14,6 +14,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:Query
+        - dynamodb:GetItem
       Resource:
         - ${self:custom.moodsTableArn}
         - Fn::Join:
@@ -27,6 +28,8 @@ provider:
     TWITCH_CLIENT_ID: hidden
     TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions
     TWITCH_OWNER_ID: hidden
+    MAX_GET_LIMIT: 600
+    MAX_UPDATES: 100
 
 plugins:
   - serverless-plugin-epsagon

@@ -4,16 +4,17 @@ const { encodeOffset, decodeOffset } = require('../lib/offset');
 
 const {
   TABLE_NAME,
+  MAX_GET_LIMIT,
 } = process.env;
-const MAX_LIMIT = 600;
 
 async function getMood(streamId, queryStringParameters) {
   const now = new Date();
   const operator = ['<', '<=', '=', '>=', '>'].includes(queryStringParameters.operator) ? queryStringParameters.operator : '>=';
-  const datetime = queryStringParameters.datetime || formatDatetime(new Date(now.setHours(now.getHours() - 1)));
+  const datetime = queryStringParameters.datetime
+    || formatDatetime(new Date(now.setHours(now.getHours() - 1)));
   const limit = Number(queryStringParameters.limit) > 0
-    && Number(queryStringParameters.limit) <= MAX_LIMIT
-    ? Number(queryStringParameters.limit) : MAX_LIMIT;
+    && Number(queryStringParameters.limit) <= Number(MAX_GET_LIMIT)
+    ? Number(queryStringParameters.limit) : Number(MAX_GET_LIMIT);
   let offset = queryStringParameters.offset ? decodeOffset(queryStringParameters.offset) : null;
 
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
