@@ -38,6 +38,7 @@ async function handler(event, context) {
       requestContext: { resourcePath },
       httpMethod,
       headers: { token },
+      queryStringParameters,
     } = event;
 
     if (!token) {
@@ -53,7 +54,7 @@ async function handler(event, context) {
             res = await postMood(streamId, JSON.parse(event.body));
             break;
           case 'GET':
-            res = await getMood(streamId);
+            res = await getMood(streamId, queryStringParameters || {});
             break;
           default: throw new Error('INVALID_HTTP_METHOD');
         }

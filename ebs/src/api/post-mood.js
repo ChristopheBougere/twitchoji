@@ -36,7 +36,7 @@ async function writeMood(mood, streamId) {
     const fromDateStr = formatDatetime(fromDate);
     console.log(`From date ${fromDateStr}`);
     await broadcastAverageMood(streamId, fromDateStr);
-    console.log('Broadcast done.')
+    console.log('Broadcast done.');
   } catch (e) {
     if (e.name === 'ConditionalCheckFailedException') {
       console.log('Item already exists. Updating it...');
