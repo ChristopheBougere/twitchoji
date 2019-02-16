@@ -93,6 +93,15 @@ function loadData(){
       }
     );
   }
+  function choose_group(extent) {
+    var d = extent[1].getTime() - extent[0].getTime();
+    var found = groups_by_min_interval.find(function (mg) { return mg.threshold < d; });
+    console.log('interval ' + d + ' is more than ' + found.threshold + ' ms; choosing ' + found.name +
+        ' for ' + found.interval.range(extent[0], extent[1]).length + ' points');
+    if (!found.group)
+        found.group = make_group(found.interval);
+    return found.group;
+}
   chartBar
     .width(800)
     .height(300)
