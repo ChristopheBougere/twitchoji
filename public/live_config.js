@@ -54,7 +54,7 @@ twitch.onAuthorized(function (auth) {
   tuid = auth.userId;
   if (!chartBar) {
     console.log("Init Charts")
-    initCharts();
+    loadData();
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -65,9 +65,10 @@ twitch.onAuthorized(function (auth) {
     ChartBar(averageMood, userNumber);
   });
 });
-
-async function initCharts() {
-  var history = getHistory('{"operator":">"}');
+function loadData(){
+  getHistory('{"operator":">"}');
+}
+ function initCharts(history) {
   log(JSON.stringify(history))
   var chartBar = dc.lineChart("#chartLine");
   var chartRange = dc.lineChart("#chartRange");
@@ -144,7 +145,7 @@ async function getHistory(params) {
   }).then(response => response.json())
     .then(data => {
       log(JSON.stringify(data))
-      return JSON.parse(data);
+      initCharts(data);
     })
     .catch(error => console.error(error));
 }
