@@ -27,7 +27,7 @@ twitch.onAuthorized(function (auth) {
   tuid = auth.userId;
   if (!chartBar) {
     console.log("Init Charts")
-    initCharts(averageMood, userNumber);
+    initCharts();
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -39,7 +39,7 @@ twitch.onAuthorized(function (auth) {
   });
 });
 
-function initCharts(averageMood, userNumber) {
+function initCharts() {
   var history = getHistory();
   var chartBar = dc.lineChart("#chartLine");
   var chartRange = dc.lineChart("#chartRange");
