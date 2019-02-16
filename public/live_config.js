@@ -68,6 +68,7 @@ twitch.onAuthorized(function (auth) {
 
 async function initCharts() {
   var history = getHistory('{"operator":">"}');
+  log(JSON.stringify(history))
   var chartBar = dc.lineChart("#chartLine");
   var chartRange = dc.lineChart("#chartRange");
   var fullDomain = [history.items[0].datetime, new Date(t)];
@@ -142,8 +143,8 @@ async function getHistory(params) {
     mode: 'cors',
   }).then(response => response.json())
     .then(data => {
-      log(JSON.stringify(data)) // Prints result from `response.json()` in getRequest
-      return data;
+      log(JSON.stringify(data))
+      return JSON.parse(data);
     })
     .catch(error => console.error(error));
 }
