@@ -41,12 +41,12 @@ twitch.onAuthorized(function (auth) {
 
 function initCharts() {
   var history = getHistory();
-  var chartBar = dc.lineChart("#chartLine");
-  var chartRange = dc.lineChart("#chartRange");
-  var fullDomain = [data[0].date, data.slice(-1)[0].date];
-  var dimension = crossfilter(data).dimension(function (d) {
-    return d.date;
-  });
+  // var chartBar = dc.lineChart("#chartLine");
+  // var chartRange = dc.lineChart("#chartRange");
+  // var fullDomain = [data[0].date, data.slice(-1)[0].date];
+  // var dimension = crossfilter(data).dimension(function (d) {
+  //   return d.date;
+  // });
 }
 
 function getHistory() {
