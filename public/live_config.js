@@ -25,20 +25,21 @@ twitch.onContext(function (c) {
 twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
-  displayChartLine();
+  if (!chartBar) {
+    initCharts(averageMood, userNumber);
+  }
+
   twitch.listen('broadcast', function (target, contentType, content) {
     log(content);
     averageMood = JSON.parse(content);
     var userNumber = averageMood.number
     delete averageMood.number;
-    if (!chartBar) {
-      initCharts(averageMood, userNumber);
-    }
-    displayChartBar(averageMood, userNumber);
+    ChartBar(averageMood, userNumber);
   });
 });
 
 function initCharts(averageMood, userNumber) {
+  var history = getHistory();
   var chartBar = dc.lineChart("#chartLine");
   var chartRange = dc.lineChart("#chartRange");
   var fullDomain = [data[0].date, data.slice(-1)[0].date];
@@ -52,6 +53,7 @@ function getHistory() {
     method: 'GET',
     headers: new Headers({
       Token: token,
+      operator: ">",
     }),
     mode: 'cors',
   }).then(response => response.json())
