@@ -56,7 +56,6 @@ async function getHistory(params) {
     method: 'GET',
     headers: new Headers({
       Token: token,
-      operator: ">",
     }),
     mode: 'cors',
   }).then(response => response.json())
