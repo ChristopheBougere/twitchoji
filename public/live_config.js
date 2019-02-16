@@ -70,8 +70,8 @@ function loadData(){
 }
  function initCharts(history) {
   log(JSON.stringify(history))
-  var chartBar = dc.lineChart("#chartLine");
-  var chartRange = dc.lineChart("#chartRange");
+  chartBar = dc.lineChart("#chartLine");
+  chartRange = dc.lineChart("#chartRange");
   var fullDomain = [history.items[0].datetime, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
     return d.datetime;
@@ -93,7 +93,7 @@ function loadData(){
       }
     );
   }
-  chart
+  chartBar
     .width(800)
     .height(300)
     .dimension(dimension)
@@ -111,7 +111,7 @@ function loadData(){
     .elasticY(true)
     .transitionDuration(100);
   nonzero_min(chart);
-  rangeChart
+  chartRange
     .width(800)
     .height(100)
     .dimension(dimension)
@@ -120,16 +120,16 @@ function loadData(){
     .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay);
-  rangeChart.on('filtered.dynamic-interval', function (_, filter) {
-    chart.group(choose_group(filter || fullDomain));
+    chartRange.on('filtered.dynamic-interval', function (_, filter) {
+      chartBar.group(choose_group(filter || fullDomain));
   });
-  chart.yAxis().tickFormat(function (t) {
+  chartBar.yAxis().tickFormat(function (t) {
     return t.toFixed(0);
   });
-  rangeChart.yAxis().tickFormat(function (t) {
+  chartRange.yAxis().tickFormat(function (t) {
     return "";
   });
-  rangeChart.yAxis().ticks(0);
+  chartRange.yAxis().ticks(0);
   dc.renderAll();
 }
 
