@@ -50,7 +50,7 @@ function initCharts() {
 }
 
 function getHistory() {
-  fetch(EBS_ENDPOINT, {
+  await fetch(EBS_ENDPOINT, {
     method: 'GET',
     headers: new Headers({
       Token: token,
