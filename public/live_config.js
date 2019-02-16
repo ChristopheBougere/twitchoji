@@ -6,7 +6,7 @@ var tuid;
 var detectionInterval;
 var averageMood;
 var chartBar;
-var chartMove;
+var chartRange;
 var ndx;
 var moodDimension;
 
@@ -31,9 +31,21 @@ twitch.onAuthorized(function (auth) {
     averageMood = JSON.parse(content);
     var userNumber = averageMood.number
     delete averageMood.number;
-    displayBarChar(averageMood, userNumber);
+    if (!chartBar) {
+      initCharts(averageMood, userNumber);
+    }
+    displayChartBar(averageMood, userNumber);
   });
 });
+
+function initCharts(averageMood, userNumber) {
+  var chartBar = dc.lineChart("#chartLine");
+  var chartRange = dc.lineChart("#chartRange");
+  var fullDomain = [data[0].date, data.slice(-1)[0].date];
+  var dimension = crossfilter(data).dimension(function (d) {
+    return d.date;
+  });
+}
 
 function getHistory() {
   fetch(EBS_ENDPOINT, {
@@ -56,6 +68,7 @@ function displayChartBar(averageMood, userNumber) {
   log(JSON.stringify(json, null, 2));
 
   if (!chartBar) {
+    initChartRange();
     ndx = crossfilter(json);
     moodDimension = ndx.dimension(function (d) { return d.expression; });
     sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
@@ -95,23 +108,23 @@ function displayChartLine() {
 
 }
 
-function initChartVolume(history) {
+function initChartRange(history) {
   ndx = crossfilter(history);
   moodDimension = ndx.dimension(function (d) { return d.date; });
   sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
 
-  volumeChart = dc.volumeChart('#chartVolume');
-  volumeChart.width(990) /* dc.barChart('#monthly-volume-chart', 'chartGroup'); */
-    .height(40)
-    .margins({ top: 0, right: 50, bottom: 20, left: 40 })
-    .dimension(moveMonths)
-    .group(volumeByMonthGroup)
-    .centerBar(true)
-    .gap(1)
-    .x(d3.scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-    .round(d3.timeMonth.round)
-    .alwaysUseRounding(true)
-    .xUnits(d3.timeMonths);
+  rangeChart
+    .width(800)
+    .height(100)
+    .dimension(dimension)
+    .group(groups_by_min_interval[0].group)
+    .yAxisPadding(1)
+    .valueAccessor(function (kv) { return kv.value.total / kv.value.count; })
+    .x(d3.scaleTime().domain(fullDomain))
+    .xUnits(d3.timeDay);
+  rangeChart.on('filtered.dynamic-interval', function (_, filter) {
+    chart.group(choose_group(filter || fullDomain));
+  });
 }
 function remap(input) {
   return Object.keys(input).map(function (expression) {
