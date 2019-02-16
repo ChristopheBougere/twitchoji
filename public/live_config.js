@@ -119,7 +119,7 @@ function loadData(){
     .renderVerticalGridLines(true)
     .elasticY(true)
     .transitionDuration(100);
-  nonzero_min(chart);
+  nonzero_min(chartBar);
   chartRange
     .width(800)
     .height(100)
