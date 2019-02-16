@@ -72,7 +72,7 @@ function loadData(){
   log(JSON.stringify(history))
   var chartBar = dc.lineChart("#chartLine");
   var chartRange = dc.lineChart("#chartRange");
-  var fullDomain = [history.items[0].datetime, new Date(t)];
+  var fullDomain = [history.items[0].datetime, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
     return d.datetime;
   });
