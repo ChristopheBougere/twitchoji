@@ -109,7 +109,7 @@ function loadData(){
     .group(choose_group(fullDomain))
     .yAxisPadding(0.1)
     .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
-    .rangeChart(rangeChart)
+    .rangeChart(chartRange)
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay)
     .brushOn(false)
