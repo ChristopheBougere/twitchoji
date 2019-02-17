@@ -61,7 +61,7 @@ twitch.onAuthorized(function (auth) {
   //   ChartBar(averageMood, userNumber);
   // });
 });
-function loadData() {
+async function loadData() {
   var url = new URL(EBS_ENDPOINT);
   url.search = new URLSearchParams('{"operator":">"}');
   await fetch(url, {
@@ -77,7 +77,7 @@ function loadData() {
     })
     .catch(error => console.error(error));
 }
-}
+
 
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
