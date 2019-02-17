@@ -105,11 +105,11 @@ function initCharts(history) {
     .xUnits(d3.timeDay)
     .elasticY(true)
     .renderHorizontalGridLines(true)
-    .legend(dc.legend().x(70).y(10).itemHeight(13).gap(5))
+    .legend(dc.legend())
     .compose([
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.neutral / d.number;}), 'neutral').colors("black"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.fearful / d.number;}), 'fearful').colors("blue"),
-      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.sad / d.number;}), 'sad').colors("rose"),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.sad / d.number;}), 'sad').colors("pink"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.happy / d.number;}), 'happy').colors("yellow"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.disgusted / d.number;}), 'disgusted').colors("green"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.angry / d.number;}), 'angry').colors("red")
