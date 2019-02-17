@@ -110,7 +110,8 @@ function initCharts(history) {
   }
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
-    return d.number;
+    log("d useful "+ d);
+    return d.value;
   });
   chartBar
     .width(null)
@@ -136,10 +137,6 @@ function initCharts(history) {
     .dimension(dimension)
     .group(numberUserByGroup)
     .yAxisPadding(1)
-    .valueAccessor(function (kv) { 
-      // log("kv "+ JSON.stringify(kv));
-      return kv.value; 
-    })
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay);
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
