@@ -31,10 +31,6 @@ var groups_by_min_interval = [
     name: 'seconds',
     threshold: 60 * 1000,
     interval: d3.timeSecond
-  }, {
-    name: 'milliseconds',
-    threshold: 0,
-    interval: d3.timeMillisecond
   }
 ];
 
@@ -134,7 +130,6 @@ function initCharts(history) {
     .width(null)
     .height(null)
     .dimension(dimension)
-    .group(groups_by_min_interval[0].group)
     .yAxisPadding(1)
     .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
     .x(d3.scaleTime().domain(fullDomain))
