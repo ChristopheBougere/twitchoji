@@ -81,7 +81,7 @@ async function loadData() {
 
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
-  chartLine = dc.lineChart("#chartLine")
+  chartLine = dc.lineChart  ("#chartLine")
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
@@ -108,10 +108,7 @@ function initCharts(history) {
     .renderHorizontalGridLines(true)
     .group(dimension.group().reduceSum(function (d) {
       return d.number;
-    }), 'Monthly Index Average')
-    .valueAccessor(function (d) {
-      return d.value.avg;
-    })
+    }), 'totalUser')
 
   chartRange
     .width(null)
