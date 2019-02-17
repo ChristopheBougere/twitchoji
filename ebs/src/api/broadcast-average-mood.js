@@ -34,7 +34,7 @@ async function fetchItems(streamId, fromDate) {
   return items;
 }
 
-function computeAverageMood(items) {
+function computeAverageMood(items, streamId, fromDate) {
   const inital = {
     number: 0,
     neutral: 0,
@@ -57,16 +57,23 @@ function computeAverageMood(items) {
     return acc;
   }, inital);
 
-  if (averageMood.number) {
-    averageMood.neutral /= averageMood.number;
-    averageMood.happy /= averageMood.number;
-    averageMood.sad /= averageMood.number;
-    averageMood.angry /= averageMood.number;
-    averageMood.fearful /= averageMood.number;
-    averageMood.disgusted /= averageMood.number;
-    averageMood.surprised /= averageMood.number;
+  const number = averageMood.number;
+  delete averageMood.number;
+  if (number) {
+    averageMood.neutral /= number;
+    averageMood.happy /= number;
+    averageMood.sad /= number;
+    averageMood.angry /= number;
+    averageMood.fearful /= number;
+    averageMood.disgusted /= number;
+    averageMood.surprised /= number;
   }
-  return averageMood;
+  return {
+    mood: averageMood,
+    datetime: fromDate,
+    number: number || 0,
+    streamId,
+  };
 }
 
 async function makeRequest(streamId, averageMood) {
@@ -115,7 +122,7 @@ async function broadcastAverageMood(streamId, fromDate) {
   console.log(`Stream ${streamId} items: ${JSON.stringify(items, null, 2)}`);
 
   // Compute average mood
-  const averageMood = computeAverageMood(items);
+  const averageMood = computeAverageMood(items, streamId, fromDate);
   console.log(`Stream ${streamId} average mood: ${JSON.stringify(averageMood, null, 2)}`);
 
   // Then broadcast using Twitch PubSub
