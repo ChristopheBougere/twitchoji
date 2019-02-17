@@ -30,11 +30,11 @@ twitch.onAuthorized(async function (auth) {
     await initCharts(d);
   }
 
-  // twitch.listen('broadcast', function (target, contentType, content) {
-  //   log(content);
-  //   averageMood = JSON.parse(content);
-  //   updateGraphs(averageMood);
-  // });
+  twitch.listen('broadcast', function (target, contentType, content) {
+    log(content);
+    averageMood = JSON.parse(content);
+    updateGraphs(averageMood);
+  });
 });
 
 async function loadData(token, params = {}) {
@@ -59,7 +59,6 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
-  log(rows);
   return rows;
 
 }
@@ -68,7 +67,6 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  log(data)
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
   let fullDomain = [fromDate, new Date()];
