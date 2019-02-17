@@ -125,6 +125,10 @@ function updateGraphs(averageMood) {
   log(averageMood);
   data.push(averageMood)
   ndx.add(data);
+  let fromDate = new Date();
+  fromDate.setMinutes(fromDate.getMinutes() - 30);
+  let fullDomain = [fromDate, new Date()];
+
   dimension = ndx.dimension(function (d) {
     return new Date(d.datetime);
   });
@@ -133,14 +137,18 @@ function updateGraphs(averageMood) {
     return d.number;
   });
 
-  chartComposite.compose([
-    dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.fearful / d.number; }), 'fearful').colors("blue"),
-    dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.sad / d.number; }), 'sad').colors("pink"),
-    dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.happy / d.number; }), 'happy').colors("orange"),
-    dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.disgusted / d.number; }), 'disgusted').colors("green"),
-    dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.angry / d.number; }), 'angry').colors("red")
-  ]);
-  chartRange.group(numberUserByGroup);
+  chartComposite
+    .compose([
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.fearful / d.number; }), 'fearful').colors("blue"),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.sad / d.number; }), 'sad').colors("pink"),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.happy / d.number; }), 'happy').colors("orange"),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.disgusted / d.number; }), 'disgusted').colors("green"),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.angry / d.number; }), 'angry').colors("red")
+    ])
+    .dimension(dimension);
+  chartRange
+    .group(numberUserByGroup)
+    .dimension(dimension);
   dc.redrawAll();
 }
 
