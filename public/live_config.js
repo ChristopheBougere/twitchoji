@@ -145,7 +145,7 @@ function updateGraphs(averageMood) {
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.disgusted / d.number; }), 'disgusted').colors("green"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.angry / d.number; }), 'angry').colors("red")
     ])
-    .dimension(dimension);
+    .dimension(dimension)
     .x(d3.scaleTime().domain(fullDomain))
   chartRange
     .group(numberUserByGroup)
