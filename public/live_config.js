@@ -23,17 +23,15 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    var d = await loadData(token, { "operator": ">" });
+    var d = await loadData(token, { "datetime": new Date(), "operator": ">" });
     initCharts(d);
   }
 
-  // twitch.listen('broadcast', function (target, contentType, content) {
-  //   log(content);
-  //   averageMood = JSON.parse(content);
-  //   var userNumber = averageMood.number
-  //   delete averageMood.number;
-  //   ChartBar(averageMood, userNumber);
-  // });
+  twitch.listen('broadcast', function (target, contentType, content) {
+    log(content);
+    averageMood = JSON.parse(content);
+    updateGraphs(averageMood);
+  });
 });
 
 async function loadData(token, params = {}) {
@@ -66,7 +64,8 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  var fromDate = (data[0] && new Date(data[0].datetime)) || new Date();
+  var fromDate = new Date();
+  fromDate.setMinutes(fromDate.getMinutes() - 30);
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(data).dimension(function (d) {
     return new Date(d.datetime);
@@ -112,3 +111,18 @@ function initCharts(data) {
 
   dc.renderAll();
 }
+
+function updateGraphs(averageMood){
+  ndx.remove();
+  history.push(averageMood)
+  ndx.add(history);
+  dc.redrawAll();
+}
+
+function remap(input) {
+  return Object.keys(input).map(function (expression) {
+    return {
+      expression: expression,
+      value: input[expression],
+    };
+  });
