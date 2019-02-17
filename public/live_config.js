@@ -124,6 +124,7 @@ function updateGraphs(averageMood) {
   log(averageMood);
   data.push(averageMood)
   ndx.add(data);
+  
   dc.redrawAll();
 }
 

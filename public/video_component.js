@@ -24,8 +24,8 @@ twitch.onAuthorized(function (auth) {
     averageMood = JSON.parse(content);
     delete averageMood.number;
     console.log(averageMood);
-    const highestMood = Object.keys(averageMood).reduce(function(a, b) {
-      return averageMood[a] > averageMood[b] ? a : b;
+    const highestMood = Object.keys(averageMood.mood).reduce(function(a, b) {
+      return averageMood.mood[a] > averageMood.mood[b] ? a : b;
     });
     log(highestMood, average[highestMood]);
     var averageMoodEl = document.getElementById('average');
