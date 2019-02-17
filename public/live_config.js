@@ -137,7 +137,7 @@ function initCharts(history) {
     .group(numberUserByGroup)
     .yAxisPadding(1)
     .valueAccessor(function (kv) { 
-      log("kv "+ kv);
+      log("kv "+ JSON.stringify(kv));
       return kv.number; 
     })
     .x(d3.scaleTime().domain(fullDomain))
