@@ -105,11 +105,11 @@ function initCharts(history) {
     .xUnits(d3.timeDay)
     .elasticY(true)
     .renderHorizontalGridLines(true)
-    .compose(
+    .compose([
       dc.linechart.group(dimension.group().reduceSum(function (d) {
         return d.mood.angry;
       }), 'angry')
-    )
+    ])
 
   chartRange
     .width(null)
