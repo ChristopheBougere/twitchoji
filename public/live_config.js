@@ -67,7 +67,7 @@ function loadData() {
 function initCharts(history) {
   log(JSON.stringify(history))
   chartBar = dc.lineChart("#chartLine");
-  chartRange = dc.lineChart("#chartRange");
+  chartRange = dc.barChart("#chartRange");
 
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   log(fromDate);
@@ -108,6 +108,13 @@ function initCharts(history) {
     log("found.group " + JSON.stringify(found.group));
     return found.group;
   }
+  var groupRange = ndx.dimension(function (d) {
+    return d.datetime;
+  });
+
+  var numberUserByGroup = dimension.group().reduceSum(function (d) {
+    return d.number;
+  });
   chartBar
     .width(null)
     .height(null)
@@ -130,6 +137,7 @@ function initCharts(history) {
     .width(null)
     .height(null)
     .dimension(dimension)
+    .group(numberUserByGroup)
     .yAxisPadding(1)
     .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
     .x(d3.scaleTime().domain(fullDomain))
