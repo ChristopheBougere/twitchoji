@@ -127,10 +127,6 @@ function initCharts(history) {
     .gap(1)
     .round(d3.timeMinute.round)
     .alwaysUseRounding(true);
-  chartRange.on('filtered.dynamic-interval', function (_, filter) {
-    chartComposite.group(choose_group(filter || fullDomain));
-  });
-  chartRange.yAxis().tickFormat(function (v) { return ""; });
 
   dc.renderAll();
 }
