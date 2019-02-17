@@ -17,9 +17,11 @@ async function getMood(streamId, queryStringParameters) {
     ? Number(queryStringParameters.limit) : Number(MAX_GET_LIMIT);
   let offset = queryStringParameters.offset ? decodeOffset(queryStringParameters.offset) : null;
 
+  console.log(`operator: ${operator}, datetime: ${datetime}, limit: ${limit}, offset: ${JSON.stringify(offset)}`);
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
   const items = [];
   do {
+    console.log(`Querying ${limit - items.length} items with offset ${JSON.stringify(offset)}...`);
     // eslint-disable-next-line no-await-in-loop
     const { Items, LastEvaluatedKey } = await dynamoDoc.query({
       TableName: TABLE_NAME,
@@ -32,7 +34,7 @@ async function getMood(streamId, queryStringParameters) {
         ':streamId': streamId,
         ':datetime': datetime,
       },
-      LastEvaluatedKey: offset,
+      ExclusiveStartKey: offset,
       Limit: limit - items.length,
     }).promise();
     items.push(...Items);
