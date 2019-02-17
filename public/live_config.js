@@ -1,11 +1,12 @@
-var EBS_ENDPOINT = 'https://yo1yc4g2z0.execute-api.us-east-1.amazonaws.com/dev/moods';
-var twitch = window.Twitch.ext;
-var context;
-var token;
-var tuid;
-var chartBar;
-var chartComposite;
-var data;
+let EBS_ENDPOINT = 'https://yo1yc4g2z0.execute-api.us-east-1.amazonaws.com/dev/moods';
+let twitch = window.Twitch.ext;
+let context;
+let token;
+let tuid;
+let chartBar;
+let chartComposite;
+let data;
+let ndx;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -23,16 +24,16 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    var d = await loadData(token, { "operator": ">" });
-    initCharts(d);
+    let initDate = new Date();
+    initDate.setMinutes(initDate.getMinutes() - 30);
+    var d = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
+    await initCharts(d);
   }
 
   // twitch.listen('broadcast', function (target, contentType, content) {
   //   log(content);
   //   averageMood = JSON.parse(content);
-  //   var userNumber = averageMood.number
-  //   delete averageMood.number;
-  //   ChartBar(averageMood, userNumber);
+  //   updateGraphs(averageMood);
   // });
 });
 
@@ -58,6 +59,7 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
+  log(rows);
   return rows;
 
 }
@@ -66,9 +68,15 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  var fromDate = (data[0] && new Date(data[0].datetime)) || new Date();
-  var fullDomain = [fromDate, new Date()];
-  var dimension = crossfilter(data).dimension(function (d) {
+  log(data)
+  let fromDate = new Date();
+  fromDate.setMinutes(fromDate.getMinutes() - 30);
+  let fullDomain = [fromDate, new Date()];
+  if (!data) {
+    data = emptyData();
+  }
+  ndx = crossfilter(data);
+  let dimension = ndx.dimension(function (d) {
     return new Date(d.datetime);
   });
 
@@ -76,7 +84,7 @@ function initCharts(data) {
     return d.number;
   });
 
-  chartComposite /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
+  chartComposite
     .width(null)
     .height(null)
     .transitionDuration(1000)
@@ -111,4 +119,24 @@ function initCharts(data) {
     .alwaysUseRounding(true);
 
   dc.renderAll();
+}
+
+function updateGraphs(averageMood) {
+  ndx.remove();
+  data.push(averageMood)
+  ndx.add(data);
+  dc.redrawAll();
+}
+
+function remap(input) {
+  return Object.keys(input).map(function (expression) {
+    return {
+      expression: expression,
+      value: input[expression],
+    };
+  });
+}
+
+function emptyData() {
+  return { "mood": { "disgusted": 0, "happy": 0, "sad": 0, "neutral": 0, "angry": 0, "fearful": 0, "surprised": 0 }, "datetime": new Date(), "number": 0 };
 }
