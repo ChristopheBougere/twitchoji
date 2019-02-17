@@ -24,7 +24,7 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    var d = await loadData(token, { "datetime": new Date(), "operator": ">" });
+    var d = await loadData(token, { "datetime": new Date().toISOString(), "operator": ">" });
     await initCharts(d);
   }
 
@@ -57,6 +57,7 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
+  log(rows);
   return rows;
 
 }
