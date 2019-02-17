@@ -118,7 +118,7 @@ function initCharts(history) {
     .dimension(dimension)
     .group(choose_group(fullDomain))
     .yAxisPadding(0.1)
-    .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
+    .valueAccessor(function (kv) { return kv.number; })
     .rangeChart(chartRange)
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay)
