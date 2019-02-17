@@ -72,8 +72,9 @@ function loadData(){
   log(JSON.stringify(history))
   chartBar = dc.lineChart("#chartLine");
   chartRange = dc.lineChart("#chartRange");
-  log (new Date(history.items[0].datetime));
-  var fullDomain = [new Date(history.items[0].datetime), new Date()];
+  var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
+  log(fromDate);
+  var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
     return d.datetime;
   });
@@ -111,8 +112,8 @@ function loadData(){
     return found.group;
 }
   chartBar
-    .width(800)
-    .height(300)
+    .width(null)
+    .height(null)
     .dimension(dimension)
     .group(choose_group(fullDomain))
     .yAxisPadding(0.1)
@@ -129,8 +130,8 @@ function loadData(){
     .transitionDuration(100);
   nonzero_min(chartBar);
   chartRange
-    .width(800)
-    .height(100)
+    .width(null)
+    .height(null)
     .dimension(dimension)
     .group(groups_by_min_interval[0].group)
     .yAxisPadding(1)
@@ -219,8 +220,8 @@ function initChartRange(history) {
   sumGroup = moodDimension.group().reduceSum(function (d) { return (d.value); });
 
   rangeChart
-    .width(800)
-    .height(100)
+    .width(null)
+    .height(null)
     .dimension(dimension)
     .group(groups_by_min_interval[0].group)
     .yAxisPadding(1)
