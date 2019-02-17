@@ -65,28 +65,23 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
+  log(data)
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
   let fullDomain = [fromDate, new Date()];
-  let dimension;
-  if(!data){
-    ndx = crossfilter(emptyData());
-    dimension = ndx.dimension(function (d) {
-      return new Date(d.datetime);
-    });
-  }else{
-    ndx = crossfilter(data);
-    dimension = ndx.dimension(function (d) {
-      return new Date(d.datetime);
-    });
+  if (!data) {
+    data = emptyData();
   }
-
+  ndx = crossfilter(data);
+  let dimension = ndx.dimension(function (d) {
+    return new Date(d.datetime);
+  });
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
     return d.number;
   });
 
-  chartComposite /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
+  chartComposite
     .width(null)
     .height(null)
     .transitionDuration(1000)
@@ -123,7 +118,7 @@ function initCharts(data) {
   dc.renderAll();
 }
 
-function updateGraphs(averageMood){
+function updateGraphs(averageMood) {
   ndx.remove();
   data.push(averageMood)
   ndx.add(data);
@@ -139,6 +134,6 @@ function remap(input) {
   });
 }
 
-function emptyData(){
-return {"mood":{"disgusted":0,"happy":0,"sad":0,"neutral":0,"angry":0,"fearful":0,"surprised":0},"datetime":new Date(),"number":0};
+function emptyData() {
+  return { "mood": { "disgusted": 0, "happy": 0, "sad": 0, "neutral": 0, "angry": 0, "fearful": 0, "surprised": 0 }, "datetime": new Date(), "number": 0 };
 }
