@@ -73,7 +73,7 @@ function initCharts(history) {
   log(fromDate);
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
-    return d.datetime;
+    return new Date(d.datetime).getTime() / 1000;
   });
   function make_group(interval) {
     return dimension.group(interval).reduce(
@@ -110,8 +110,7 @@ function initCharts(history) {
   }
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
-    log("d useful "+ JSON.stringify(d));
-    return d.value;
+    return d.number;
   });
   chartBar
     .width(null)
