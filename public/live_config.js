@@ -59,7 +59,6 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
-  log(rows)
   return rows;
 
 }
@@ -68,7 +67,6 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  log(data)
   var fromDate = (data[0] && new Date(data[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(data).dimension(function (d) {
