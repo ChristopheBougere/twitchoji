@@ -23,7 +23,7 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    var d = await loadData(token, {"operator":">"});
+    var d = await loadData(token, { "operator": ">" });
     initCharts(d);
   }
 
@@ -42,6 +42,9 @@ async function loadData(token, params = {}) {
   let items
   const rows = [];
   do {
+    const obj = { ...params };
+    if (offset)
+      obj.offset = offset;
     url.search = new URLSearchParams({
       ...params,
       offset,
