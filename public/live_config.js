@@ -81,7 +81,7 @@ async function loadData() {
 
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
-  chartComposite = dc.compositeChart  ("#chartLine")
+  chartComposite = dc.compositeChart("#chartLine")
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
@@ -106,9 +106,11 @@ function initCharts(history) {
     .elasticY(true)
     .renderHorizontalGridLines(true)
     .compose([
-      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {
-        return d.mood.angry;
-      }), 'angry')
+      dc.lineChart(chartComposite)
+        .group(dimension.group().reduceSum(function (d) {
+          return d.mood.angry / d.number;
+        }), 'angry')
+        .renderArea(false)
     ])
 
   chartRange
