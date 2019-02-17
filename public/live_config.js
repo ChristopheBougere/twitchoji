@@ -81,7 +81,7 @@ async function loadData() {
 
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
-  chartLine = dc.lineChart  ("#chartLine")
+  chartComposite = dc.compositeChart  ("#chartLine")
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
@@ -92,7 +92,7 @@ function initCharts(history) {
     return d.number;
   });
 
-  chartLine /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
+  chartComposite /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
     .renderArea(true)
     .width(null)
     .height(null)
@@ -106,9 +106,11 @@ function initCharts(history) {
     .xUnits(d3.timeDay)
     .elasticY(true)
     .renderHorizontalGridLines(true)
-    .group(dimension.group().reduceSum(function (d) {
-      return d.number;
-    }), 'totalUser')
+    .compose(
+      linechart.group(dimension.group().reduceSum(function (d) {
+        return d.mood.angry;
+      }), 'angry')
+    )
 
   chartRange
     .width(null)
@@ -123,7 +125,7 @@ function initCharts(history) {
     .round(d3.timeMinute.round)
     .alwaysUseRounding(true);
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
-    chartLine.group(choose_group(filter || fullDomain));
+    chartComposite.group(choose_group(filter || fullDomain));
   });
   chartRange.yAxis().tickFormat(function (v) { return ""; });
 
