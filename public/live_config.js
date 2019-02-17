@@ -85,7 +85,7 @@ function initCharts(history) {
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
-    return new Date(d.datetime).getTime() / 1000;
+    return new Date(d.datetime);
   });
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
@@ -109,5 +109,3 @@ function initCharts(history) {
   });
   dc.renderAll();
 }
-
-
