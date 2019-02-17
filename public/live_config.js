@@ -46,8 +46,7 @@ async function loadData(token, params = {}) {
     if (offset)
       obj.offset = offset;
     url.search = new URLSearchParams({
-      ...params,
-      offset,
+      obj
     });
     const res = await fetch(url, {
       method: 'GET',
