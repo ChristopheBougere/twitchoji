@@ -110,7 +110,10 @@ function initCharts(history) {
         .group(dimension.group().reduceSum(function (d) {
           return d.mood.angry / d.number;
         }), 'angry')
-        .renderArea(false)
+        .on('renderlet', function (chart) {
+          d3.selectAll('.line')
+            .style('fill', 'none')
+        })
     ])
 
   chartRange
