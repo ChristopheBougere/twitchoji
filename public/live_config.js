@@ -3,36 +3,9 @@ var twitch = window.Twitch.ext;
 var context;
 var token;
 var tuid;
-var detectionInterval;
-var averageMood;
 var chartBar;
-var chartRange;
-var ndx;
-var moodDimension;
-
-function nonzero_min(chart) {
-  dc.override(chart, "yAxisMin", function () {
-    var min = d3.min(chart.data(), function (layer) {
-      return d3.min(layer.values, function (p) {
-        return p.y + p.y0;
-      });
-    });
-    return dc.utils.subtract(min, chart.yAxisPadding());
-  });
-  return chart;
-}
-
-var groups_by_min_interval = [
-  {
-    name: 'minutes',
-    threshold: 60 * 60 * 1000,
-    interval: d3.timeMinute
-  }, {
-    name: 'seconds',
-    threshold: 60 * 1000,
-    interval: d3.timeSecond
-  }
-];
+var chartComposite;
+var history;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -48,9 +21,10 @@ twitch.onContext(function (c) {
 twitch.onAuthorized(function (auth) {
   token = auth.token;
   tuid = auth.userId;
-  if (!chartBar) {
+  if (!chartComposite) {
     console.log("Init Charts")
-    loadData();
+    history = loadData(token, '{"operator":">"}');
+    initCharts(history);
   }
 
   // twitch.listen('broadcast', function (target, contentType, content) {
@@ -61,21 +35,28 @@ twitch.onAuthorized(function (auth) {
   //   ChartBar(averageMood, userNumber);
   // });
 });
-async function loadData() {
-  var url = new URL(EBS_ENDPOINT);
-  url.search = new URLSearchParams('{"operator":">"}');
-  await fetch(url, {
-    method: 'GET',
-    headers: new Headers({
-      Token: token,
-    }),
-    mode: 'cors',
-  }).then(response => response.json())
-    .then(data => {
-      log(JSON.stringify(data))
-      initCharts(data);
-    })
-    .catch(error => console.error(error));
+async function loadData(token, params = {}) {
+  const url = new URL(EBS_ENDPOINT);
+  let offset;
+  let items
+  const rows = [];
+  do {
+    url.search = new URLSearchParams({
+      ...params,
+      offset,
+    });
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: new Headers({
+        Token: token,
+      }),
+      mode: 'cors',
+    });
+    ({ offset, items } = await res.json());
+    rows.push(...items);
+  } while (offset);
+  return rows;
+
 }
 
 
