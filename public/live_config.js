@@ -106,7 +106,7 @@ function initCharts(history) {
     .elasticY(true)
     .renderHorizontalGridLines(true)
     .compose([
-      dc.linechart.group(dimension.group().reduceSum(function (d) {
+      dc.linechart(chartComposite).group(dimension.group().reduceSum(function (d) {
         return d.mood.angry;
       }), 'angry')
     ])
