@@ -110,7 +110,7 @@ function initCharts(history) {
   }
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
-    log("d useful "+ d);
+    log("d useful "+ JSON.stringify(d));
     return d.value;
   });
   chartBar
