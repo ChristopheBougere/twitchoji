@@ -12,12 +12,12 @@ var moodDimension;
 
 function nonzero_min(chart) {
   dc.override(chart, "yAxisMin", function () {
-      var min = d3.min(chart.data(), function (layer) {
-          return d3.min(layer.values, function (p) {
-              return p.y + p.y0;
-          });
+    var min = d3.min(chart.data(), function (layer) {
+      return d3.min(layer.values, function (p) {
+        return p.y + p.y0;
       });
-      return dc.utils.subtract(min, chart.yAxisPadding());
+    });
+    return dc.utils.subtract(min, chart.yAxisPadding());
   });
   return chart;
 }
@@ -65,14 +65,14 @@ twitch.onAuthorized(function (auth) {
     ChartBar(averageMood, userNumber);
   });
 });
-function loadData(){
+function loadData() {
   getHistory('{"operator":">"}');
 }
- function initCharts(history) {
+function initCharts(history) {
   log(JSON.stringify(history))
   chartBar = dc.lineChart("#chartLine");
   chartRange = dc.lineChart("#chartRange");
-  log (new Date(history.items[0].datetime));
+  log(new Date(history.items[0].datetime));
   var fullDomain = [new Date(history.items[0].datetime), new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
     return d.datetime;
@@ -82,13 +82,13 @@ function loadData(){
       function (p, v) {
         p.count++;
         p.total += v.value;
-        log("p"+p);
+        log("p" + p);
         return p;
       },
       function (p, v) {
         p.count--;
         p.total += v.value;
-        log("p"+p);
+        log("p" + p);
         return p;
       },
       function () {
@@ -99,17 +99,17 @@ function loadData(){
   function choose_group(extent) {
     log("extent" + extent);
     var d = extent[1].getTime() - extent[0].getTime();
-    var found = groups_by_min_interval.find(function (mg) { 
-      log ("mg"+ JSON.stringify(mg) + "d" + d);
-      return mg.threshold < d; 
+    var found = groups_by_min_interval.find(function (mg) {
+      log("mg" + JSON.stringify(mg) + "d" + d);
+      return mg.threshold < d;
     });
     console.log('interval ' + d + ' is more than ' + found.threshold + ' ms; choosing ' + found.name +
-        ' for ' + found.interval.range(extent[0], extent[1]).length + ' points');
+      ' for ' + found.interval.range(extent[0], extent[1]).length + ' points');
     if (!found.group)
-        found.group = make_group(found.interval);
-        log("found.group "+ JSON.stringify(found.group));
+      found.group = make_group(found.interval);
+    log("found.group " + JSON.stringify(found.group));
     return found.group;
-}
+  }
   chartBar
     .width(800)
     .height(300)
@@ -137,8 +137,8 @@ function loadData(){
     .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay);
-    chartRange.on('filtered.dynamic-interval', function (_, filter) {
-      chartBar.group(choose_group(filter || fullDomain));
+  chartRange.on('filtered.dynamic-interval', function (_, filter) {
+    chartBar.group(choose_group(filter || fullDomain));
   });
   chartBar.yAxis().tickFormat(function (t) {
     return t.toFixed(0);
