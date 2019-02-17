@@ -23,7 +23,7 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    history = await loadData(token, '{"operator":">"}');
+    history = await loadData(token, JSON.parse('{"operator":">"}'));
     initCharts(history);
   }
 
