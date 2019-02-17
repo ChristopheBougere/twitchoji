@@ -5,7 +5,7 @@ var token;
 var tuid;
 var chartBar;
 var chartComposite;
-var history;
+var data;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -23,8 +23,8 @@ twitch.onAuthorized(async function (auth) {
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    history = await loadData(token, JSON.parse('{"operator":">"}'));
-    initCharts(history);
+    var d = await loadData(token, {"operator":">"});
+    initCharts(d);
   }
 
   // twitch.listen('broadcast', function (target, contentType, content) {
@@ -62,13 +62,13 @@ async function loadData(token, params = {}) {
 }
 
 
-function initCharts(history) {
+function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  log(history)
-  var fromDate = (history[0] && new Date(history[0].datetime)) || new Date();
+  log(data)
+  var fromDate = (data[0] && new Date(data[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
-  var dimension = crossfilter(history).dimension(function (d) {
+  var dimension = crossfilter(data).dimension(function (d) {
     return new Date(d.datetime);
   });
 
