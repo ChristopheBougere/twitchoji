@@ -6,6 +6,7 @@ var tuid;
 var chartBar;
 var chartComposite;
 var data;
+var ndx;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -114,8 +115,8 @@ function initCharts(data) {
 
 function updateGraphs(averageMood){
   ndx.remove();
-  history.push(averageMood)
-  ndx.add(history);
+  data.push(averageMood)
+  ndx.add(data);
   dc.redrawAll();
 }
 
