@@ -55,6 +55,7 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
+  log(rows)
   return rows;
 
 }
