@@ -136,7 +136,10 @@ function initCharts(history) {
     .dimension(dimension)
     .group(numberUserByGroup)
     .yAxisPadding(1)
-    .valueAccessor(function (kv) { return kv.mood.angry / kv.number; })
+    .valueAccessor(function (kv) { 
+      log("kv "+ kv);
+      return kv.number; 
+    })
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay);
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
