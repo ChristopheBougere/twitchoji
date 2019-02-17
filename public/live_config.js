@@ -81,7 +81,7 @@ async function loadData() {
 
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
-
+  chartLine = dc.chartLine("#chartLine")
   var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history.items).dimension(function (d) {
@@ -91,6 +91,27 @@ function initCharts(history) {
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
     return d.number;
   });
+
+  moveChart /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
+    .renderArea(true)
+    .width(null)
+    .height(null)
+    .transitionDuration(1000)
+    .margins({ top: 30, right: 50, bottom: 25, left: 40 })
+    .dimension(dimension)
+    .mouseZoomable(true)
+    .rangeChart(chartRange)
+    .x(d3.scaleTime().domain(fullDomain))
+    .round(d3.timeMinute.round)
+    .xUnits(d3.timeDay)
+    .elasticY(true)
+    .renderHorizontalGridLines(true)
+    .group(dimension.group().reduceSum(function (d) {
+      return d.number;
+    }), 'Monthly Index Average')
+    .valueAccessor(function (d) {
+      return d.value.avg;
+    })
 
   chartRange
     .width(null)
@@ -107,7 +128,7 @@ function initCharts(history) {
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
     //chartBar.group(choose_group(filter || fullDomain));
   });
-  chartRange.yAxis().tickFormat(function(v) { return ""; });
+  chartRange.yAxis().tickFormat(function (v) { return ""; });
 
   dc.renderAll();
 }
