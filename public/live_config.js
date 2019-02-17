@@ -65,7 +65,7 @@ async function loadData(token, params = {}) {
 function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  log(JSON.stringify(history))
+  log(history)
   var fromDate = (history[0] && new Date(history[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
   var dimension = crossfilter(history).dimension(function (d) {
