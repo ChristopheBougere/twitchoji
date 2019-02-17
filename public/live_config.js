@@ -18,12 +18,12 @@ twitch.onContext(function (c) {
   context = c;
 });
 
-twitch.onAuthorized(function (auth) {
+twitch.onAuthorized(async function (auth) {
   token = auth.token;
   tuid = auth.userId;
   if (!chartComposite) {
     console.log("Init Charts")
-    history = loadData(token, '{"operator":">"}');
+    history = await loadData(token, '{"operator":">"}');
     initCharts(history);
   }
 
@@ -35,6 +35,7 @@ twitch.onAuthorized(function (auth) {
   //   ChartBar(averageMood, userNumber);
   // });
 });
+
 async function loadData(token, params = {}) {
   const url = new URL(EBS_ENDPOINT);
   let offset;
@@ -65,9 +66,9 @@ function initCharts(history) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
   log(JSON.stringify(history))
-  var fromDate = (history.items[0] && new Date(history.items[0].datetime)) || new Date();
+  var fromDate = (history[0] && new Date(history[0].datetime)) || new Date();
   var fullDomain = [fromDate, new Date()];
-  var dimension = crossfilter(history.items).dimension(function (d) {
+  var dimension = crossfilter(history).dimension(function (d) {
     return new Date(d.datetime);
   });
 
