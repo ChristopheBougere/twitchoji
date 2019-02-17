@@ -102,10 +102,12 @@ function initCharts(history) {
     .xUnits(d3.timeDay)
     .centerBar(true)
     .gap(1)
-    // .round(d3.timeSecond.round)
-    // .alwaysUseRounding(true);
+    .round(d3.timeMinute.round)
+    .alwaysUseRounding(true);
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
     //chartBar.group(choose_group(filter || fullDomain));
   });
+  chartRange.yAxis().tickFormat(function(v) { return ""; });
+
   dc.renderAll();
 }
