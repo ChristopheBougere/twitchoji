@@ -28,11 +28,11 @@ twitch.onAuthorized(async function (auth) {
     await initCharts(d);
   }
 
-  twitch.listen('broadcast', function (target, contentType, content) {
-    log(content);
-    averageMood = JSON.parse(content);
-    updateGraphs(averageMood);
-  });
+  // twitch.listen('broadcast', function (target, contentType, content) {
+  //   log(content);
+  //   averageMood = JSON.parse(content);
+  //   updateGraphs(averageMood);
+  // });
 });
 
 async function loadData(token, params = {}) {
