@@ -26,15 +26,15 @@ twitch.onAuthorized(async function (auth) {
     console.log("Init Charts")
     let initDate = new Date();
     initDate.setMinutes(initDate.getMinutes() - 30);
-    var d = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
-    await initCharts(d);
+    data = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
+    await initCharts();
+
   }
 
-  // twitch.listen('broadcast', function (target, contentType, content) {
-  //   log(content);
-  //   averageMood = JSON.parse(content);
-  //   updateGraphs(averageMood);
-  // });
+  twitch.listen('broadcast', function (target, contentType, content) {
+    averageMood = JSON.parse(content);
+    updateGraphs(averageMood);
+  });
 });
 
 async function loadData(token, params = {}) {
@@ -59,16 +59,14 @@ async function loadData(token, params = {}) {
     ({ offset, items } = await res.json());
     rows.push(...items);
   } while (offset);
-  log(rows);
   return rows;
 
 }
 
 
-function initCharts(data) {
+function initCharts() {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  log(data)
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
   let fullDomain = [fromDate, new Date()];
@@ -123,18 +121,11 @@ function initCharts(data) {
 
 function updateGraphs(averageMood) {
   ndx.remove();
+  log(averageMood);
   data.push(averageMood)
   ndx.add(data);
+  
   dc.redrawAll();
-}
-
-function remap(input) {
-  return Object.keys(input).map(function (expression) {
-    return {
-      expression: expression,
-      value: input[expression],
-    };
-  });
 }
 
 function emptyData() {
