@@ -136,7 +136,7 @@ function remap(input) {
     };
   });
 }
-{"number":3,"neutral":0.9997320771217346,"happy":0.000033437572407516804,"sad":0.000003945046425239222,"angry":0.000002685671887547869,"fearful":4.935788785095004e-8,"disgusted":4.564472888546334e-8,"surprised":0.000227802413670967}
+
 function emptyData() {
   return { "mood": { "disgusted": 0, "happy": 0, "sad": 0, "neutral": 0, "angry": 0, "fearful": 0, "surprised": 0 }, "datetime": new Date(), "number": 0 };
 }
