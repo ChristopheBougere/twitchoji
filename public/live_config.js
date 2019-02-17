@@ -121,19 +121,10 @@ function initCharts() {
 
 function updateGraphs(averageMood) {
   ndx.remove();
-  data.push(remap(averageMood))
+  log(averageMood);
+  data.push(averageMood)
   ndx.add(data);
   dc.redrawAll();
-}
-
-function remap(input) {
-  return Object.keys(input).map(function (expression) {
-    return {
-      number: input.number,
-      datetime: new Date().toISOString(),
-      mood: input,
-    };
-  });
 }
 
 function emptyData() {
