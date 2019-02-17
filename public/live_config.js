@@ -93,7 +93,6 @@ function initCharts(history) {
   });
 
   chartComposite /* dc.lineChart('#monthly-move-chart', 'chartGroup') */
-    .renderArea(true)
     .width(null)
     .height(null)
     .transitionDuration(1000)
