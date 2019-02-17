@@ -110,9 +110,10 @@ function initCharts(history) {
         .group(dimension.group().reduceSum(function (d) {
           return d.mood.angry / d.number;
         }), 'angry')
-        .on('renderlet', function (chart) {
-          d3.selectAll('.line')
-            .style('fill', 'none')
+        .renderDataPoints({
+          radius: 15,
+          fillOpacity: 0.5,
+          strokeOpacity: 0.8
         })
     ])
 
