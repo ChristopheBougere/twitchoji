@@ -106,10 +106,12 @@ function initCharts(history) {
     .elasticY(true)
     .renderHorizontalGridLines(true)
     .compose([
-      dc.lineChart(chartComposite)
-        .group(dimension.group().reduceSum(function (d) {
-          return d.mood.angry / d.number;
-        }), 'angry')
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.neutral / d.number;}), 'neutral'),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.fearful / d.number;}), 'fearful'),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.sad / d.number;}), 'sad'),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.happy / d.number;}), 'happy'),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.disgusted / d.number;}), 'disgusted'),
+      dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) {return d.mood.angry / d.number;}), 'angry')
     ])
 
   chartRange
