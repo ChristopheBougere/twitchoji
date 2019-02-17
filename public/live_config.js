@@ -105,8 +105,7 @@ function initCharts(history) {
     .xUnits(d3.timeDay)
     .elasticY(true)
     .renderHorizontalGridLines(true)
-    .legend(dc.legend().x(800).y(10).autoItemWidth(true).gap(5).horizontal())
-    .brushOn(false)
+    .legend(dc.legend().autoItemWidth(true).horizontal(true))
     .compose([
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.fearful / d.number; }), 'fearful').colors("blue"),
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.sad / d.number; }), 'sad').colors("pink"),
