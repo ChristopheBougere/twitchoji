@@ -1,12 +1,12 @@
-var EBS_ENDPOINT = 'https://yo1yc4g2z0.execute-api.us-east-1.amazonaws.com/dev/moods';
-var twitch = window.Twitch.ext;
-var context;
-var token;
-var tuid;
-var chartBar;
-var chartComposite;
-var data;
-var ndx;
+let EBS_ENDPOINT = 'https://yo1yc4g2z0.execute-api.us-east-1.amazonaws.com/dev/moods';
+let twitch = window.Twitch.ext;
+let context;
+let token;
+let tuid;
+let chartBar;
+let chartComposite;
+let data;
+let ndx;
 
 function log(message) {
   if (typeof message === 'string') {
@@ -25,7 +25,7 @@ twitch.onAuthorized(async function (auth) {
   if (!chartComposite) {
     console.log("Init Charts")
     var d = await loadData(token, { "datetime": new Date(), "operator": ">" });
-    initCharts(d);
+    await initCharts(d);
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -65,12 +65,22 @@ async function loadData(token, params = {}) {
 function initCharts(data) {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
-  var fromDate = new Date();
+  let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
-  var fullDomain = [fromDate, new Date()];
-  var dimension = crossfilter(data).dimension(function (d) {
-    return new Date(d.datetime);
-  });
+  let fullDomain = [fromDate, new Date()];
+  let dimension;
+  if(!data){
+    ndx = crossfilter(emptyData());
+    dimension = ndx.dimension(function (d) {
+      return new Date(d.datetime);
+    });
+  }else{
+    ndx = crossfilter(data);
+    dimension = ndx.dimension(function (d) {
+      return new Date(d.datetime);
+    });
+  }
+
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
     return d.number;
@@ -127,4 +137,8 @@ function remap(input) {
       value: input[expression],
     };
   });
+}
+
+function emptyData(){
+return {"mood":{"disgusted":0,"happy":0,"sad":0,"neutral":0,"angry":0,"fearful":0,"surprised":0},"datetime":new Date(),"number":0};
 }
