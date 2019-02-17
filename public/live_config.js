@@ -26,8 +26,9 @@ twitch.onAuthorized(async function (auth) {
     console.log("Init Charts")
     let initDate = new Date();
     initDate.setMinutes(initDate.getMinutes() - 30);
-    var d = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
-    await initCharts(d);
+    data = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
+    await initCharts();
+
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -65,7 +66,7 @@ async function loadData(token, params = {}) {
 }
 
 
-function initCharts(data) {
+function initCharts() {
   chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
   let fromDate = new Date();
