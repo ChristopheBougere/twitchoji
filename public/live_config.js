@@ -133,11 +133,15 @@ function initCharts(history) {
   chartRange
     .width(null)
     .height(null)
+    .margins({ top: 0, right: 50, bottom: 20, left: 40 })
     .dimension(dimension)
     .group(numberUserByGroup)
-    .yAxisPadding(1)
     .x(d3.scaleTime().domain(fullDomain))
-    .xUnits(d3.timeDay);
+    .xUnits(d3.timeDay)
+    .centerBar(true)
+    .gap(1)
+    .round(d3.timeSecond.round)
+    .alwaysUseRounding(true);
   chartRange.on('filtered.dynamic-interval', function (_, filter) {
     chartBar.group(choose_group(filter || fullDomain));
   });
