@@ -108,9 +108,6 @@ function initCharts(history) {
     log("found.group " + JSON.stringify(found.group));
     return found.group;
   }
-  var groupRange = ndx.dimension(function (d) {
-    return d.datetime;
-  });
 
   var numberUserByGroup = dimension.group().reduceSum(function (d) {
     return d.number;
