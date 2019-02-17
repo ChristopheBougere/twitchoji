@@ -32,8 +32,6 @@ twitch.onAuthorized(async function (auth) {
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
-    log("content "+ content);
-    log("data " + data);
     averageMood = JSON.parse(content);
     updateGraphs(averageMood);
   });
@@ -131,7 +129,7 @@ function updateGraphs(averageMood) {
 function remap(input) {
   return Object.keys(input).map(function (expression) {
     return {
-      number: input[number],
+      number: input.number,
       datetime: new Date().toISOString(),
       mood: input,
     };
