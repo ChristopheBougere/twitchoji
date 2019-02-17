@@ -74,7 +74,6 @@ function loadData(){
   chartRange = dc.lineChart("#chartRange");
   log (new Date(history.items[0].datetime));
   var fullDomain = [new Date(history.items[0].datetime), new Date()];
-  log
   var dimension = crossfilter(history.items).dimension(function (d) {
     return d.datetime;
   });
@@ -83,11 +82,13 @@ function loadData(){
       function (p, v) {
         p.count++;
         p.total += v.value;
+        log("p"+p);
         return p;
       },
       function (p, v) {
         p.count--;
         p.total += v.value;
+        log("p"+p);
         return p;
       },
       function () {
@@ -96,12 +97,17 @@ function loadData(){
     );
   }
   function choose_group(extent) {
+    log("extent" + extent);
     var d = extent[1].getTime() - extent[0].getTime();
-    var found = groups_by_min_interval.find(function (mg) { return mg.threshold < d; });
+    var found = groups_by_min_interval.find(function (mg) { 
+      log ("mg"+ JSON.stringify(mg) + "d" + d);
+      return mg.threshold < d; 
+    });
     console.log('interval ' + d + ' is more than ' + found.threshold + ' ms; choosing ' + found.name +
         ' for ' + found.interval.range(extent[0], extent[1]).length + ' points');
     if (!found.group)
         found.group = make_group(found.interval);
+        log("found.group "+ JSON.stringify(found.group));
     return found.group;
 }
   chartBar
