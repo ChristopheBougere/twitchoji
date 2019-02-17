@@ -110,11 +110,6 @@ function initCharts(history) {
         .group(dimension.group().reduceSum(function (d) {
           return d.mood.angry / d.number;
         }), 'angry')
-        .renderDataPoints({
-          radius: 15,
-          fillOpacity: 0.5,
-          strokeOpacity: 0.8
-        })
     ])
 
   chartRange
