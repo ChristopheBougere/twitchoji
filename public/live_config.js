@@ -88,7 +88,6 @@ function initCharts(data) {
     .mouseZoomable(true)
     .rangeChart(chartRange)
     .x(d3.scaleTime().domain(fullDomain))
-    .round(d3.timeMinute.round)
     .xUnits(d3.timeDay)
     .elasticY(true)
     .renderHorizontalGridLines(true)
