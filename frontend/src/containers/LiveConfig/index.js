@@ -40,7 +40,12 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
-    this.data.push(JSON.parse(content));
+    this.setState(prevState => ({
+      data: [
+        ...prevState.data,
+        JSON.parse(content),
+      ]
+    }));
     this.updateCharts();
   }
 
