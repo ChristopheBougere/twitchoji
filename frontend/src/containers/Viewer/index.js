@@ -26,8 +26,8 @@ class Viewer extends Component {
     this.onBroadcast = this.onBroadcast.bind(this);
     this.onAuthorized = this.onAuthorized.bind(this);
     this.onEmojiClick = this.onEmojiClick.bind(this);
-    this.startFaceApi = this.startFaceApi.bind(this);
-    this.stopFaceApi = this.stopFaceApi.bind(this);
+    this.onStartFaceApiClick = this.onStartFaceApiClick.bind(this);
+    this.onStopFaceApiClick = this.onStopFaceApiClick.bind(this);
 
     this.styles = {
       container: {
@@ -90,15 +90,13 @@ class Viewer extends Component {
     }, 1000);
   }
 
-  componentWillUnmount() {}
-
   onEmojiClick(mood) {
     this.postMood({
       [mood]: 1.,
     });
   }
 
-  async startFaceApi() {
+  async onStartFaceApiClick() {
     if (!this.state.modelsLoaded) {
       await faceapi.loadFaceExpressionModel('/models');
       await faceapi.loadTinyFaceDetectorModel('/models');
@@ -111,17 +109,17 @@ class Viewer extends Component {
         video: true,
         audio: false,
       });
+      this.videoRef.current.srcObject = stream;
+      this.detectionInterval = setInterval(this.detectionInterval, 1000);
+      this.setState({
+        detecting: true,
+      });
     } catch (e) {
       console.warn('Unable to get user media');
     }
-    this.videoRef.current.srcObject = stream;
-    this.detectionInterval = setInterval(this.detectionInterval, 1000);
-    this.setState({
-      detecting: true,
-    });
   }
 
-  stopFaceApi() {
+  onStopFaceApiClick() {
     clearInterval(this.detectionInterval);
     this.setState({
       detecting: false,
@@ -136,7 +134,7 @@ class Viewer extends Component {
     const res = await fetch(EBS_ENDPOINT, {
       method: 'POST',
       headers: new Headers({
-        token,
+        token: this.state.token,
       }),
       body: JSON.stringify({
         mood,
@@ -223,7 +221,7 @@ class Viewer extends Component {
           style={this.styles.actionButton}
           alt="Stop"
           title="Stop"
-          onClick={this.stopFaceApi}
+          onClick={this.onStopFaceApiClick}
         />
       );
     } else {
@@ -232,7 +230,7 @@ class Viewer extends Component {
           style={this.styles.actionButton}
           alt="Start"
           title="Start"
-          onClick={this.startFaceApi}
+          onClick={this.onStartFaceApiClick}
         />
       );
     }
