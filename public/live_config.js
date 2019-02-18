@@ -3,7 +3,7 @@ let twitch = window.Twitch.ext;
 let context;
 let token;
 let tuid;
-let chartBar;
+// let chartBar;
 let chartComposite;
 let data;
 let ndx;
@@ -30,7 +30,6 @@ twitch.onAuthorized(async function (auth) {
     initDate.setMinutes(initDate.getMinutes() - 30);
     data = await loadData(token, { "datetime": initDate.toISOString(), "operator": ">" });
     await initCharts();
-
   }
 
   twitch.listen('broadcast', function (target, contentType, content) {
@@ -66,7 +65,7 @@ async function loadData(token, params = {}) {
 }
 
 function initCharts() {
-  chartRange = dc.barChart("#chartRange");
+  // chartRange = dc.barChart("#chartRange");
   chartComposite = dc.compositeChart("#chartLine")
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
@@ -104,33 +103,32 @@ function initCharts() {
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.angry / d.number; }), 'angry').colors("red")
     ])
 
-  chartRange
-    .width(null)
-    .height(null)
-    .margins({ top: 0, right: 50, bottom: 20, left: 40 })
-    .dimension(dimension)
-    .group(numberUserByGroup)
-    .x(d3.scaleTime().domain(fullDomain))
-    .xUnits(d3.timeDay)
-    .centerBar(true)
-    .gap(1)
-    .round(d3.timeMinute.round)
-    .alwaysUseRounding(true);
+  // chartRange
+  //   .width(null)
+  //   .height(null)
+  //   .margins({ top: 0, right: 50, bottom: 20, left: 40 })
+  //   .dimension(dimension)
+  //   .group(numberUserByGroup)
+  //   .x(d3.scaleTime().domain(fullDomain))
+  //   .xUnits(d3.timeDay)
+  //   .centerBar(true)
+  //   .gap(1)
+  //   .round(d3.timeMinute.round)
+  //   .alwaysUseRounding(true);
 
   dc.renderAll();
 }
 
 function updateGraphs(averageMood) {
   ndx.remove();
-  log(averageMood);
-
   data.push(averageMood)
   ndx.add(data);
+  log("adding ["+averageMood+"] to data ["+ data +"].");
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
   let fullDomain = [fromDate, new Date()];
   chartComposite.x(d3.scaleTime().domain(fullDomain));
-  chartRange.x(d3.scaleTime().domain(fullDomain));
+  // chartRange.x(d3.scaleTime().domain(fullDomain));
   dc.redrawAll();
 }
 
