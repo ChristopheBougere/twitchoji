@@ -51,7 +51,6 @@ class Viewer extends Component {
         width: '39%',
         height: 'calc(50vw)',
         margin: 'auto',
-        display: 'none',
         cursor: 'pointer',
       },
     };
