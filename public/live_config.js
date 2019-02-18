@@ -3,7 +3,7 @@ let twitch = window.Twitch.ext;
 let context;
 let token;
 let tuid;
-// let chartBar;
+let chartBar;
 let chartComposite;
 let data;
 let ndx;
@@ -89,7 +89,7 @@ function initCharts() {
     .transitionDuration(1000)
     .margins({ top: 30, right: 50, bottom: 25, left: 40 })
     .dimension(dimension)
-    // .rangeChart(chartRange)
+    .rangeChart(chartRange)
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay)
     .brushOn(false)
@@ -104,18 +104,18 @@ function initCharts() {
       dc.lineChart(chartComposite).group(dimension.group().reduceSum(function (d) { return d.mood.angry / d.number; }), 'angry').colors("red")
     ])
 
-  // chartRange
-  //   .width(null)
-  //   .height(null)
-  //   .margins({ top: 0, right: 50, bottom: 20, left: 40 })
-  //   .dimension(dimension)
-  //   .group(numberUserByGroup)
-  //   .x(d3.scaleTime().domain(fullDomain))
-  //   .xUnits(d3.timeDay)
-  //   .centerBar(true)
-  //   .gap(1)
-  //   .round(d3.timeMinute.round)
-  //   .alwaysUseRounding(true);
+  chartRange
+    .width(null)
+    .height(null)
+    .margins({ top: 0, right: 50, bottom: 20, left: 40 })
+    .dimension(dimension)
+    .group(numberUserByGroup)
+    .x(d3.scaleTime().domain(fullDomain))
+    .xUnits(d3.timeDay)
+    .centerBar(true)
+    .gap(1)
+    .round(d3.timeMinute.round)
+    .alwaysUseRounding(true);
 
   dc.renderAll();
 }
@@ -123,13 +123,14 @@ function initCharts() {
 function updateGraphs(averageMood) {
   ndx.remove();
   log(averageMood);
+
   data.push(averageMood)
   ndx.add(data);
-  log("New data to display ["+ data +"]");
   let fromDate = new Date();
   fromDate.setMinutes(fromDate.getMinutes() - 30);
   let fullDomain = [fromDate, new Date()];
   chartComposite.x(d3.scaleTime().domain(fullDomain));
+  chartRange.x(d3.scaleTime().domain(fullDomain));
   dc.redrawAll();
 }
 
