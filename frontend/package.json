@@ -1,0 +1,33 @@
+{
+  "name": "twitch-extension-react-boilerplate",
+  "version": "1.0.0",
+  "description": "Twitch Extension React Boilerplate",
+  "main": "index.js",
+  "repository": "https://github.com/edusalguero/twitch-extension-react-boilerplate",
+  "author": "Edu Salguero <edusalguero@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "webpack --mode development",
+    "build": "webpack --mode production",
+    "start:dev": "webpack-dev-server --mode development"
+  },
+  "dependencies": {
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.11",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1",
+    "style-loader": "^0.21.0",
+    "uglifyjs-webpack-plugin": "^2.1.1",
+    "webpack": "^4.29.4",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.4"
+  }
+}

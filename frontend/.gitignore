@@ -1,0 +1,13 @@
+# dependencies
+/node_modules
+
+# production build
+public/assets/app.js
+public/assets/app.css
+
+# misc
+.idea
+.DS_Store
+yarn-debug.log*
+yarn-error.log*
+yarn.lock

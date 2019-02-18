@@ -1,0 +1,3 @@
+export const ENTRY_POINT_VIEWER = 'VIEWER';
+export const ENTRY_POINT_CONFIG = 'CONFIG';
+export const ENTRY_POINT_LIVE_CONFIG = 'LIVE_CONFIG';
