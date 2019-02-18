@@ -44,7 +44,7 @@ class LiveConfig extends Component {
       data: [
         ...prevState.data,
         JSON.parse(content),
-      ]
+      ],
     }));
     this.updateCharts();
   }

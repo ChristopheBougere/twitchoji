@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import 'webrtc-adapter';
+import 'webrtc-adapter';
 import * as faceapi from 'face-api.js';
 
 import constants from '../../constants';
@@ -47,6 +47,9 @@ class Viewer extends Component {
         width: '39%',
         margin: '5%',
         cursor: 'pointer',
+      },
+      actionButtonContainer: {
+        textAlign: 'center',
       },
       actionButton: {
         width: '39%',
@@ -117,24 +120,6 @@ class Viewer extends Component {
     } catch (e) {
       console.warn('Unable to get user media');
     }
-  }
-
-  async detection() {
-    if (!this.videoRef.current || this.videoRef.current.paused || this.videoRef.current.ended) {
-      return;
-    }
-    const res = await faceapi.detectSingleFace(this.videoRef.current, new faceapi.TinyFaceDetectorOptions({
-      inputSize: 224,
-      scoreThreshold: 0.5,
-    })).withFaceExpressions();
-    if (!res) {
-      return;
-    }
-    var mood = {};
-    res.expressions.forEach((m) => {
-      mood[m.expression] = m.probability;
-    });
-    this.postMood(mood);
   }
 
   onStopFaceApiClick() {
@@ -220,22 +205,45 @@ class Viewer extends Component {
     const { detecting } = this.state;
     if (detecting) {
       return (
-        <StopSvg
-          style={this.styles.actionButton}
-          alt="Stop"
-          title="Stop"
-          onClick={this.onStopFaceApiClick}
-        />
+        <div style={this.styles.actionButtonContainer}>
+          <StopSvg
+            style={this.styles.actionButton}
+            alt="Stop"
+            title="Stop"
+            onClick={this.onStopFaceApiClick}
+          />
+        </div>
       );
     }
     return (
-      <PlaySvg
-        style={this.styles.actionButton}
-        alt="Start"
-        title="Start"
-        onClick={this.onStartFaceApiClick}
-      />
+      <div style={this.styles.actionButtonContainer}>
+        <PlaySvg
+          style={this.styles.actionButton}
+          alt="Start"
+          title="Start"
+          onClick={this.onStartFaceApiClick}
+        />
+      </div>
     );
+  }
+
+  async detection() {
+    if (!this.videoRef.current || this.videoRef.current.paused || this.videoRef.current.ended) {
+      return;
+    }
+    const res = await faceapi.detectSingleFace(this.videoRef.current,
+      new faceapi.TinyFaceDetectorOptions({
+        inputSize: 224,
+        scoreThreshold: 0.5,
+      })).withFaceExpressions();
+    if (!res) {
+      return;
+    }
+    const mood = {};
+    res.expressions.forEach((m) => {
+      mood[m.expression] = m.probability;
+    });
+    this.postMood(mood);
   }
 
   async postMood(mood) {
