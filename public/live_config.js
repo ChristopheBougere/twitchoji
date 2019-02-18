@@ -89,7 +89,7 @@ function initCharts() {
     .transitionDuration(1000)
     .margins({ top: 30, right: 50, bottom: 25, left: 40 })
     .dimension(dimension)
-    .rangeChart(chartRange)
+    // .rangeChart(chartRange)
     .x(d3.scaleTime().domain(fullDomain))
     .xUnits(d3.timeDay)
     .brushOn(false)
