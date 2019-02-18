@@ -28,6 +28,7 @@ class Viewer extends Component {
     this.onEmojiClick = this.onEmojiClick.bind(this);
     this.onStartFaceApiClick = this.onStartFaceApiClick.bind(this);
     this.onStopFaceApiClick = this.onStopFaceApiClick.bind(this);
+    this.detection = this.detection.bind(this);
 
     this.styles = {
       container: {
@@ -109,13 +110,31 @@ class Viewer extends Component {
         audio: false,
       });
       this.videoRef.current.srcObject = stream;
-      this.detectionInterval = setInterval(this.detectionInterval, 1000);
+      this.detectionInterval = setInterval(this.detection, 1000);
       this.setState({
         detecting: true,
       });
     } catch (e) {
       console.warn('Unable to get user media');
     }
+  }
+
+  detection() {
+    if (!this.videoRef.current || this.videoRef.current.paused || this.videoRef.current.ended) {
+      return;
+    }
+    const res = await faceapi.detectSingleFace(this.videoRef.current, new faceapi.TinyFaceDetectorOptions({
+      inputSize: 224,
+      scoreThreshold: 0.5,
+    })).withFaceExpressions();
+    if (res) {
+      return;
+    }
+    var mood = {};
+    res.expressions.forEach((m) => {
+      mood[m.expression] = m.probability;
+    });
+    postMood(mood);
   }
 
   onStopFaceApiClick() {
