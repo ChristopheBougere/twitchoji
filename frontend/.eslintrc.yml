@@ -5,7 +5,6 @@ extends: airbnb
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
-parser: babel-eslint
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -15,5 +14,4 @@ plugins:
   - react
 rules:
   react/jsx-filename-extension: 0
-  react/destructuring-assignment: 0
   no-console: 0
