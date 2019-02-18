@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'webrtc-adapter';
 import * as faceapi from 'face-api.js';
 
-import { EBS_ENDPOINT } from '../../constants';
+import constants from '../../constants';
 import AngrySvg from './svg/angry.svg';
 import DisgustedSvg from './svg/disgusted.svg';
 import FearfulSvg from './svg/fearful.svg';
@@ -71,9 +71,7 @@ class Viewer extends Component {
   async onBroadcast(target, contentType, content) {
     const { mood } = JSON.parse(content);
     console.log(`Received mood ${JSON.stringify(mood, null, 2)}`);
-    const highestMood = Object.keys(mood).reduce(function(a, b) {
-      return mood[a] > mood[b] ? a : b;
-    });
+    const highestMood = Object.keys(mood).reduce((a, b) => (mood[a] > mood[b] ? a : b));
     console.log(`Highest mood: ${highestMood}=${mood[highestMood]}`);
     const now = new Date().getTime();
     this.setState({
@@ -81,7 +79,8 @@ class Viewer extends Component {
       lastUpdate: now,
     });
     setTimeout(() => {
-      if (this.state.lastUpdate === now) {
+      const { lastUpdate } = this.state;
+      if (lastUpdate === now) {
         this.setState({
           highestMood: null,
           lastUpdate: new Date().getTime(),
@@ -92,12 +91,13 @@ class Viewer extends Component {
 
   onEmojiClick(mood) {
     this.postMood({
-      [mood]: 1.,
+      [mood]: 1.0,
     });
   }
 
   async onStartFaceApiClick() {
-    if (!this.state.modelsLoaded) {
+    const { modelsLoaded } = this.state;
+    if (!modelsLoaded) {
       await faceapi.loadFaceExpressionModel('/models');
       await faceapi.loadTinyFaceDetectorModel('/models');
       this.setState({
@@ -126,27 +126,10 @@ class Viewer extends Component {
     });
   }
 
-  async postMood(mood) {
-    if (!this.state.token) {
-      console.warn('Unable to post mood: not authorized.');
-      return;
-    }
-    const res = await fetch(EBS_ENDPOINT, {
-      method: 'POST',
-      headers: new Headers({
-        token: this.state.token,
-      }),
-      body: JSON.stringify({
-        mood,
-      }),
-      mode: 'cors',
-    });
-    return res;
-  }
-
   get averageEmoji() {
+    const { highestMood } = this.state;
     let img;
-    switch (this.state.highestMood) {
+    switch (highestMood) {
       case 'angry': img = <AngrySvg />; break;
       case 'disgusted': img = <DisgustedSvg />; break;
       case 'fearful': img = <FearfulSvg />; break;
@@ -163,7 +146,8 @@ class Viewer extends Component {
   }
 
   get emojiButtons() {
-    if (this.state.detecting) {
+    const { detecting } = this.state;
+    if (detecting) {
       return null;
     }
     return (
@@ -215,7 +199,8 @@ class Viewer extends Component {
   }
 
   get actionButton() {
-    if (this.state.detecting) {
+    const { detecting } = this.state;
+    if (detecting) {
       return (
         <StopSvg
           style={this.styles.actionButton}
@@ -224,21 +209,40 @@ class Viewer extends Component {
           onClick={this.onStopFaceApiClick}
         />
       );
-    } else {
-      return (
-        <PlaySvg
-          style={this.styles.actionButton}
-          alt="Start"
-          title="Start"
-          onClick={this.onStartFaceApiClick}
-        />
-      );
     }
+    return (
+      <PlaySvg
+        style={this.styles.actionButton}
+        alt="Start"
+        title="Start"
+        onClick={this.onStartFaceApiClick}
+      />
+    );
+  }
+
+  async postMood(mood) {
+    const { token } = this.state;
+    if (!token) {
+      console.warn('Unable to post mood: not authorized.');
+      return {};
+    }
+    const res = await fetch(constants.EBS_ENDPOINT, {
+      method: 'POST',
+      headers: new Headers({
+        token,
+      }),
+      body: JSON.stringify({
+        mood,
+      }),
+      mode: 'cors',
+    });
+    return res;
   }
 
   render() {
     return (
       <section style={this.styles.container}>
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video autoPlay ref={this.videoRef} style={this.styles.video} />
         {this.averageEmoji}
         {this.emojiButtons}

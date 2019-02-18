@@ -6,12 +6,14 @@
   "author": "Twitchoji",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "webpack --mode development",
     "build": "webpack --mode production",
-    "start:dev": "webpack-dev-server --mode development"
+    "lint": "eslint src",
+    "start": "webpack-dev-server --mode development"
   },
   "dependencies": {
     "@babel/runtime": "^7.3.1",
+    "crossfilter2": "^1.4.6",
+    "d3": "^5.9.1",
     "dc": "^2.2.2",
     "face-api.js": "^0.18.0",
     "react": "^16.3.2",
@@ -25,6 +27,11 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
     "css-loader": "^0.28.11",
+    "eslint": "^5.14.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
     "node-sass": "^4.9.0",
     "react-svg-loader": "^2.1.0",
     "sass-loader": "^7.0.1",

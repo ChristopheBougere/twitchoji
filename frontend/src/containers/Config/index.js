@@ -8,7 +8,7 @@ class Config extends Component {
   }
 
   componentDidMount() {
-    window.Twitch.ext.onAuthorized(auth => {
+    window.Twitch.ext.onAuthorized((auth) => {
       console.log(auth);
     });
   }
@@ -16,7 +16,7 @@ class Config extends Component {
   componentWillUnmount() {}
 
   render() {
-    return <section className='Config'>Config</section>;
+    return <section className="Config">Config</section>;
   }
 }
 

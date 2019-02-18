@@ -4,7 +4,7 @@ import d3 from 'd3';
 import dc from 'dc';
 import 'dc/dc.css';
 
-import { EBS_ENDPOINT } from '../../constants'
+import constants from '../../constants';
 
 class LiveConfig extends Component {
   constructor(props, context) {
@@ -47,23 +47,25 @@ class LiveConfig extends Component {
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color)
-    ;
+      .colors(color);
   }
 
   initCharts(fromDatetime) {
-    this.chartRange = dc.barChart("#chartRange");
-    this.chartComposite = dc.compositeChart("#chartLine");
-    this.ndx = crossfilter(this.state.data);
+    const { data } = this.state;
+    this.chartRange = dc.barChart('#chartRange');
+    this.chartComposite = dc.compositeChart('#chartLine');
+    this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
-    this.group = dimension.group().reduceSum(d => d.number);
+    this.group = this.dimension.group().reduceSum(d => d.number);
     this.fullDomain = [fromDatetime, new Date()];
 
     this.chartComposite
       .width(null)
       .height(null)
       .transitionDuration(1000)
-      .margins({ top: 30, right: 50, bottom: 25, left: 40 })
+      .margins({
+        top: 30, right: 50, bottom: 25, left: 40,
+      })
       .dimension(this.dimension)
       .rangeChart(this.chartRange)
       .x(d3.scaleTime().domain(this.fullDomain))
@@ -79,12 +81,13 @@ class LiveConfig extends Component {
         this.getLineChart('disgusted', 'green'),
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'black'),
-      ])
-    ;
+      ]);
     this.chartRange
       .width(null)
       .height(null)
-      .margins({ top: 0, right: 50, bottom: 20, left: 40 })
+      .margins({
+        top: 0, right: 50, bottom: 20, left: 40,
+      })
       .dimension(this.dimension)
       .group(this.group)
       .x(d3.scaleTime().domain(this.fullDomain))
@@ -92,31 +95,31 @@ class LiveConfig extends Component {
       .centerBar(true)
       .gap(1)
       .round(d3.timeMinute.round)
-      .alwaysUseRounding(true)
-    ;
-
+      .alwaysUseRounding(true);
     dc.renderAll();
   }
 
   updateCharts() {
+    const { data } = this.state;
     this.ndx.remove();
-    this.ndx.add(this.state.data);
+    this.ndx.add(data);
     const fromDatetime = new Date();
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
-    this.fullDomain = [fromDate, new Date()];
+    this.fullDomain = [fromDatetime, new Date()];
     this.chartComposite.x(d3.scaleTime().domain(this.fullDomain));
     this.chartRange.x(d3.scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
 
   async loadData(params = {}) {
-    if (!this.state.token) {
+    const { token } = this.state;
+    if (!token) {
       console.warn('Unable to get mood: not authorized.');
-      return;
+      return [];
     }
-    const url = new URL(EBS_ENDPOINT);
+    const url = new URL(constants.EBS_ENDPOINT);
     let offset;
-    let items
+    let items;
     const rows = [];
     do {
       const obj = { ...params };
@@ -124,14 +127,14 @@ class LiveConfig extends Component {
         obj.offset = offset;
       }
       url.search = new URLSearchParams(obj);
-      const res = await fetch(url, {
+      const res = await fetch(url, { // eslint-disable-line no-await-in-loop
         method: 'GET',
         headers: new Headers({
-          Token: this.state.token,
+          Token: token,
         }),
         mode: 'cors',
       });
-      ({ offset, items } = await res.json());
+      ({ offset, items } = await res.json()); // eslint-disable-line no-await-in-loop
       rows.push(...items);
     } while (offset);
     return rows;
@@ -140,8 +143,8 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="chartLine"></div>
-        <div id="chartRange"></div>
+        <div id="chartLine" />
+        <div id="chartRange" />
       </section>
     );
   }
