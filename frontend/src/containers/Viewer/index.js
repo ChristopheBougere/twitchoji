@@ -119,7 +119,7 @@ class Viewer extends Component {
     }
   }
 
-  detection() {
+  async detection() {
     if (!this.videoRef.current || this.videoRef.current.paused || this.videoRef.current.ended) {
       return;
     }
