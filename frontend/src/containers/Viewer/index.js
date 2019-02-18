@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import 'webrtc-adapter';
+// import 'webrtc-adapter';
 import * as faceapi from 'face-api.js';
 
 import constants from '../../constants';
