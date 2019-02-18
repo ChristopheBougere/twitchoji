@@ -127,14 +127,14 @@ class Viewer extends Component {
       inputSize: 224,
       scoreThreshold: 0.5,
     })).withFaceExpressions();
-    if (res) {
+    if (!res) {
       return;
     }
     var mood = {};
     res.expressions.forEach((m) => {
       mood[m.expression] = m.probability;
     });
-    postMood(mood);
+    this.postMood(mood);
   }
 
   onStopFaceApiClick() {
