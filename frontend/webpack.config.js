@@ -36,12 +36,10 @@ module.exports = {
       },
     ],
   },
-
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     port: 9000,
   },
-
   plugins: [
     new UglifyJsPlugin({
       uglifyOptions: {
@@ -59,4 +57,7 @@ module.exports = {
       sourceMap: true,
     }),
   ],
+  node: {
+   fs: 'empty',
+  },
 };

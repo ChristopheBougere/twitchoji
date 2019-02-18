@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import crossfilter from 'crossfilter2';
-import d3 from 'd3';
+import * as d3 from 'd3';
 import dc from 'dc';
 import 'dc/dc.css';
 
