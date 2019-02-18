@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import './config.css';
-
 class Config extends Component {
   constructor(props, context) {
     super(props, context);

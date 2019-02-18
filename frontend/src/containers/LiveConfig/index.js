@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import './live-config.css';
-
 class LiveConfig extends Component {
   constructor(props, context) {
     super(props, context);
