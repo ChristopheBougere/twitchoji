@@ -1,0 +1,7 @@
+.dc-legend {
+  font-size: 8px; 
+}
+.dc-legend .dc-legend-item rect {
+  height: 8px;
+  width: 8px;
+}
