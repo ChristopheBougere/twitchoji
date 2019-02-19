@@ -89,7 +89,7 @@ class LiveConfig extends Component {
       })
       .dimension(this.dimension)
       .group(this.group)
-      .x(d3.scaleTime().domain(this.fullDomain))
+      .x(scaleTime().domain(this.fullDomain))
       .xUnits(d3.timeDay)
       .centerBar(true)
       .gap(1)
