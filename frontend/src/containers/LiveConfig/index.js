@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import crossfilter from 'crossfilter2';
-import * as d3 from 'd3';
-import dc from 'dc';
+import dc, { crossfilter, d3 } from 'dc';
 import 'dc/dc.css';
 
 import constants from '../../constants';
@@ -40,7 +38,12 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
-    this.data.push(JSON.parse(content));
+    this.setState(prevState => ({
+      data: [
+        ...prevState.data,
+        JSON.parse(content),
+      ],
+    }));
     this.updateCharts();
   }
 
