@@ -27,8 +27,9 @@ class LiveConfig extends Component {
     this.setState({
       token: auth.token,
     });
-    const fromDatetime = new Date();
-    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
+    const now = new Date();
+    const endDateTime = now.setMinutes(now.getMinutes +1);
+    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
       operator: '>',
@@ -36,7 +37,7 @@ class LiveConfig extends Component {
     this.setState({
       data,
     });
-    this.initCharts(fromDatetime);
+    this.initCharts(fromDatetime, endDateTime);
     window.Twitch.ext.listen('broadcast', this.onBroadcast);
   }
 
@@ -60,19 +61,18 @@ class LiveConfig extends Component {
       .colors(color);
   }
 
-  initCharts(fromDatetime) {
+  initCharts(fromDatetime, endDate) {
     const { data } = this.state;
     this.chartComposite = dc.compositeChart('#compositeChar');
     this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
-    this.fullDomain = [fromDatetime, new Date()];
+    this.fullDomain = [fromDatetime, endDate];
 
     this.chartComposite
       .width(null)
       .height(null)
       .transitionDuration(1000)
-      .mouseZoomable(true)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
@@ -88,12 +88,12 @@ class LiveConfig extends Component {
         return `Total users: ${number}`;
       })
       .compose([
-        this.getLineChart('fearful', 'blue'),
+        this.getLineChart('fearful', 'black'),
         this.getLineChart('sad', 'pink'),
         this.getLineChart('happy', 'orange'),
         this.getLineChart('disgusted', 'green'),
         this.getLineChart('angry', 'red'),
-        this.getLineChart('surprised', 'black'),
+        this.getLineChart('surprised', 'blue'),
       ])
     dc.renderAll();
   }
@@ -102,9 +102,11 @@ class LiveConfig extends Component {
     const { data } = this.state;
     this.ndx.remove();
     this.ndx.add(data);
-    const fromDatetime = new Date();
-    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
-    this.fullDomain = [fromDatetime, new Date()];
+    console.log (`data updated ${JSON.stringify(data)}`);
+    const now = new Date();
+    const endDatetime = now.setMinutes(now.getMinutes() + 1);
+    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
+    this.fullDomain = [fromDatetime, endDatetime];
     this.chartComposite.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
