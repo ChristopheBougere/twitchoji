@@ -37,9 +37,10 @@ class LiveConfig extends Component {
     this.setState({
       token: auth.token,
     });
-    const now = new Date();
-    const endDateTime = now.setMinutes(now.getMinutes() + 1);
-    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
+    const fromDatetime = new Date();
+    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
+    const toDatetime = new Date();
+    toDatetime.setMinutes(toDatetime.getMinutes + 1);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
       operator: '>',
@@ -47,7 +48,8 @@ class LiveConfig extends Component {
     this.setState({
       data,
     });
-    this.initCharts(fromDatetime, endDateTime);
+
+    this.initCharts(fromDatetime, toDatetime);
     window.Twitch.ext.listen('broadcast', this.onBroadcast);
   }
 
