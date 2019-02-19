@@ -112,7 +112,7 @@ class Viewer extends Component {
         video: true,
         audio: false,
       });
-      this.videoRef.current.srcObject = stream;
+      this.videoRef.current.srcObject = this.stream;
       this.detectionInterval = setInterval(this.detection, 1000);
       this.setState({
         detecting: true,
@@ -124,7 +124,7 @@ class Viewer extends Component {
 
   onStopFaceApiClick() {
     clearInterval(this.detectionInterval);
-    this.setState.stream.getTracks().forEach(track => track.stop());
+    this.stream.getTracks().forEach(track => track.stop());
     this.setState({
       detecting: false,
     });
