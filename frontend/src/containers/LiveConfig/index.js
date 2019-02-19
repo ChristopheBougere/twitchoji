@@ -80,8 +80,8 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title(function (d) {
-        console.log(`d ${JSON.stringify(d)}`);
-        return d;
+        console.log(`d ${data[d.key].number}`);
+        return `Total users: ${data[d.key].number}`;
       })
       .compose([
         this.getLineChart('fearful', 'blue'),
