@@ -2,3 +2,6 @@
     font-size: 8px; }
     .dc-legend .dc-legend-item {
       cursor: pointer; }
+      .dc-legend rect {
+        height:8px;
+        width:8px;}
