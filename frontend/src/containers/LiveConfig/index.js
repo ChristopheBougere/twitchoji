@@ -73,7 +73,7 @@ class LiveConfig extends Component {
       .dimension(this.dimension)
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
-      .brushOn(true)
+      .brushOn(false)
       .elasticY(true)
       .elasticX(true)
       .mouseZoomable(true)
