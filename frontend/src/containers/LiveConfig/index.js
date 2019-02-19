@@ -83,7 +83,6 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title((d) => {
-        console.log(d);
         const number = this.state.data.find( i => i.datetime === this.formatDatetime(d.key)).number;
         return `Total users: ${number}`;
       })
