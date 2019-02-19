@@ -77,7 +77,6 @@ class LiveConfig extends Component {
       .xUnits(timeDay)
       .brushOn(false)
       .elasticY(true)
-      .renderHorizontalGridLines(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .compose([
         this.getLineChart('fearful', 'blue'),
@@ -88,8 +87,9 @@ class LiveConfig extends Component {
         this.getLineChart('surprised', 'black'),
       ])
       .title(function (d) {
-        log(d);
-    });
+        console.log(`d ${JSON.stringify(d)}`);
+        return d;
+      });
     dc.renderAll();
   }
 
