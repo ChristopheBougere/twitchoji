@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import dc, { crossfilter, d3 } from 'dc';
+import dc, { crossfilter } from 'dc';
 import { scaleTime } from 'd3-scale';
+import { timeDay, timeMinute } from 'd3-time';
 import 'dc/dc.css';
 
 import constants from '../../constants';
@@ -68,7 +69,7 @@ class LiveConfig extends Component {
       .dimension(this.dimension)
       .rangeChart(this.chartRange)
       .x(scaleTime().domain(this.fullDomain))
-      .xUnits(d3.timeDay)
+      .xUnits(timeDay)
       .brushOn(false)
       .elasticY(true)
       .renderHorizontalGridLines(true)
@@ -90,10 +91,10 @@ class LiveConfig extends Component {
       .dimension(this.dimension)
       .group(this.group)
       .x(scaleTime().domain(this.fullDomain))
-      .xUnits(d3.timeDay)
+      .xUnits(timeDay)
       .centerBar(true)
       .gap(1)
-      .round(d3.timeMinute.round)
+      .round(timeMinute.round)
       .alwaysUseRounding(true);
     dc.renderAll();
   }
