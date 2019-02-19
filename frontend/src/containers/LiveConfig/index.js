@@ -106,6 +106,10 @@ class LiveConfig extends Component {
         const { number } = newData.find(i => i.datetime === date);
         return `Total users: ${number}`;
       })
+      legend.disptach.on('legendClick', (d,v,c) =>{
+        log(`d: ${JSON.stringify(d)} v: ${JSON.stringify(v)} c: ${JSON.stringify(c)}`);
+        return; //do nothing
+        })
       .compose([
         this.getLineChart('fearful', 'black'),
         this.getLineChart('sad', 'pink'),
