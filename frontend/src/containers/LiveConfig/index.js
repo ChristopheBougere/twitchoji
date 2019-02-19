@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import dc, { crossfilter } from 'dc';
 import { scaleTime } from 'd3-scale';
-import { timeDay, timeMinute } from 'd3-time';
+import { timeDay } from 'd3-time';
 import 'dc/dc.css';
 import './index.css';
 
 import constants from '../../constants';
 
 class LiveConfig extends Component {
+  static formatDatetime(dateObj) {
+    return `${dateObj.toISOString().split('.')[0]}Z`;
+  }
+
   constructor(props, context) {
     super(props, context);
 
@@ -19,9 +23,9 @@ class LiveConfig extends Component {
     this.onAuthorized = this.onAuthorized.bind(this);
 
     this.styles = {
-      compositeChar: {
-        overflowX: 'hidden',
-      }
+      compositeChart: {
+        overflow: 'hidden',
+      },
     };
   }
 
@@ -33,10 +37,10 @@ class LiveConfig extends Component {
     this.setState({
       token: auth.token,
     });
-    const fromDateTime = new Date();
-    const endDatetime = fromDateTime;
-    fromDateTime.setMinutes(fromDateTime.getMinutes() - 30);
-    endDatetime.setMinutes(endDatetime.getMinutes() + 1);
+    const fromDatetime = new Date();
+    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
+    const toDatetime = new Date();
+    toDatetime.setMinutes(toDatetime.getMinutes() + 1);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
       operator: '>',
@@ -47,7 +51,8 @@ class LiveConfig extends Component {
     this.setState({
       data,
     });
-    this.initCharts(fromDatetime, endDateTime);
+
+    this.initCharts(fromDatetime, toDatetime);
     window.Twitch.ext.listen('broadcast', this.onBroadcast);
   }
 
@@ -62,10 +67,6 @@ class LiveConfig extends Component {
     this.updateCharts();
   }
 
-  formatDatetime(dateObj) {
-    return `${dateObj.toISOString().split('.')[0]}Z`;
-  }
-
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
@@ -74,7 +75,7 @@ class LiveConfig extends Component {
 
   initCharts(fromDatetime, endDate) {
     const { data } = this.state;
-    this.chartComposite = dc.compositeChart('#compositeChar');
+    this.chartComposite = dc.compositeChart('#compositeChart');
     this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
@@ -82,10 +83,11 @@ class LiveConfig extends Component {
 
     this.chartComposite
       .width(null)
-      .height(null)
+      .height(275)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
+      .transitionDuration(0)
       .dimension(this.dimension)
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
@@ -93,8 +95,9 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title((d) => {
-        const date = this.formatDatetime(d.key)
-        const number = this.state.data.find(i => i.datetime === date).number;
+        const { data: newData } = this.state;
+        const date = LiveConfig.formatDatetime(d.key);
+        const { number } = newData.find(i => i.datetime === date);
         return `Total users: ${number}`;
       })
       .compose([
@@ -104,7 +107,7 @@ class LiveConfig extends Component {
         this.getLineChart('disgusted', 'green'),
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'blue'),
-      ])
+      ]);
     dc.renderAll();
   }
 
@@ -113,11 +116,13 @@ class LiveConfig extends Component {
     this.ndx.remove();
     this.ndx.add(data);
     console.log(`data updated ${JSON.stringify(data)}`);
-    const fromDateTime = new Date();
-    const endDatetime = fromDateTime;
-    fromDateTime.setMinutes(fromDateTime.getMinutes() - 30);
-    endDatetime.setMinutes(endDatetime.getMinutes() + 1);
-    this.fullDomain = [fromDatetime, endDatetime];
+
+    const fromDatetime = new Date();
+    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
+    const toDatetime = new Date();
+    toDatetime.setMinutes(toDatetime.getMinutes() + 1);
+
+    this.fullDomain = [fromDatetime, toDatetime];
     this.chartComposite.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
@@ -154,7 +159,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="compositeChar" style={this.styles.compositeChart} />
+        <div id="compositeChart" style={this.styles.compositeChart} />
       </section>
     );
   }

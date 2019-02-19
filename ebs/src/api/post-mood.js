@@ -4,7 +4,6 @@ const broadcastAverageMood = require('./broadcast-average-mood');
 
 const {
   TABLE_NAME,
-  RANGE_SECONDS,
   MAX_UPDATES,
 } = process.env;
 
@@ -46,11 +45,11 @@ async function writeMoodAndBroadcast(mood, streamId, datetime) {
   console.log('Item added. Now broadcasting average mood');
   // Then broadcast average mood
   const fromDate = new Date(datetime);
-  fromDate.setSeconds(fromDate.getSeconds() - Number(RANGE_SECONDS));
+  fromDate.setSeconds(fromDate.getSeconds() - 1);
   console.log(datetime, fromDate);
-  const fromDateStr = formatDatetime(fromDate);
-  console.log(`From date ${fromDateStr}`);
-  await broadcastAverageMood(streamId, fromDateStr);
+  const datetimeStr = formatDatetime(fromDate);
+  console.log(`From date ${datetimeStr}`);
+  await broadcastAverageMood(streamId, datetimeStr);
   console.log('Broadcast done.');
 }
 
@@ -101,7 +100,7 @@ async function postMood(streamId, body) {
   const datetime = formatDatetime(new Date());
   console.log(`Datetime: ${datetime}`);
   // First we check if an item already exists
-  const number =a= await getNumberForItem(streamId, datetime);
+  const number = await getNumberForItem(streamId, datetime);
 
   // If the item has already been updated enough times, ignoring
   if (number >= Number(MAX_UPDATES)) {
