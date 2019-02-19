@@ -83,6 +83,7 @@ class LiveConfig extends Component {
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
+      .transitionDuration(0)
       .dimension(this.dimension)
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
