@@ -53,7 +53,11 @@ class LiveConfig extends Component {
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color);
+      .colors(color)
+      .title(function (d) {
+        console.log(`d ${JSON.stringify(d)}`);
+        return d;
+      });
   }
 
   initCharts(fromDatetime) {
@@ -86,10 +90,6 @@ class LiveConfig extends Component {
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'black'),
       ])
-      .title(function (d) {
-        console.log(`d ${JSON.stringify(d)}`);
-        return d;
-      });
     dc.renderAll();
   }
 
