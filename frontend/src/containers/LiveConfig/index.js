@@ -50,6 +50,10 @@ class LiveConfig extends Component {
     this.updateCharts();
   }
 
+  formatDatetime(dateObj) {
+    return `${dateObj.toISOString().split('.')[0]}Z`;
+  }
+  
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
@@ -80,7 +84,7 @@ class LiveConfig extends Component {
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title((d) => {
         console.log(d);
-        const number = data.find( i => i.datetime === d.key).number;
+        const number = data.find( i => i.datetime === formatDatetime(d.key)).number;
         return `Total users: ${number}`;
       })
       .compose([
