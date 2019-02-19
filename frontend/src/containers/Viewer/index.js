@@ -108,7 +108,7 @@ class Viewer extends Component {
       });
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      this.stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: false,
       });
@@ -124,6 +124,7 @@ class Viewer extends Component {
 
   onStopFaceApiClick() {
     clearInterval(this.detectionInterval);
+    this.setState.stream.getTracks().forEach(track => track.stop());
     this.setState({
       detecting: false,
     });

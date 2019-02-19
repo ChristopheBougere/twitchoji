@@ -24,7 +24,7 @@ class LiveConfig extends Component {
 
     this.styles = {
       compositeChar: {
-        overflowX: 'hidden',
+        overflow: 'hidden',
       },
     };
   }
@@ -79,7 +79,7 @@ class LiveConfig extends Component {
 
     this.chartComposite
       .width(null)
-      .height(null)
+      .height(300)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
