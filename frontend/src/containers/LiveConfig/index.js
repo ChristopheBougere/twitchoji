@@ -73,8 +73,8 @@ class LiveConfig extends Component {
       .xUnits(d3.timeDay)
       .brushOn(false)
       .elasticY(true)
-      // .elasticX(true)
-      // .mouseZoomable(true)
+      .elasticX(true)
+      .mouseZoomable(true)
       .renderHorizontalGridLines(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .compose([
