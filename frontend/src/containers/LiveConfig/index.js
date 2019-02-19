@@ -53,8 +53,7 @@ class LiveConfig extends Component {
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color)
-      .renderTitle(true);
+      .colors(color);
   }
 
   initCharts(fromDatetime) {
@@ -80,8 +79,8 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title(function (d) {
-        console.log(`d ${data[d.key].number}`);
-        return `Total users: ${data[d.key].number}`;
+        const number = data.find( i => i.datetime === d.key).number;
+        return `Total users: ${number}`;
       })
       .compose([
         this.getLineChart('fearful', 'blue'),
