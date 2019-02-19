@@ -20,7 +20,6 @@ class LiveConfig extends Component {
 
   componentDidMount() {
     window.Twitch.ext.onAuthorized(this.onAuthorized);
-    window.Twitch.ext.listen('broadcast', this.onBroadcast);
   }
 
   async onAuthorized(auth) {
@@ -37,6 +36,7 @@ class LiveConfig extends Component {
       data,
     });
     this.initCharts(fromDatetime);
+    window.Twitch.ext.listen('broadcast', this.onBroadcast);
   }
 
   async onBroadcast(target, contentType, content) {
