@@ -40,7 +40,7 @@ class LiveConfig extends Component {
     const fromDatetime = new Date();
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
     const toDatetime = new Date();
-    toDatetime.setMinutes(toDatetime.getMinutes + 1);
+    toDatetime.setMinutes(toDatetime.getMinutes() + 1);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
       operator: '>',
@@ -111,10 +111,13 @@ class LiveConfig extends Component {
     this.ndx.remove();
     this.ndx.add(data);
     console.log(`data updated ${JSON.stringify(data)}`);
-    const now = new Date();
-    const endDatetime = now.setMinutes(now.getMinutes() + 1);
-    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
-    this.fullDomain = [fromDatetime, endDatetime];
+
+    const fromDatetime = new Date();
+    fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
+    const toDatetime = new Date();
+    toDatetime.setMinutes(toDatetime.getMinutes() + 1);
+
+    this.fullDomain = [fromDatetime, toDatetime];
     this.chartComposite.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
