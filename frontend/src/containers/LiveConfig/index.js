@@ -52,8 +52,7 @@ class LiveConfig extends Component {
 
   initCharts(fromDatetime) {
     const { data } = this.state;
-    this.chartRange = dc.barChart('#chartRange');
-    this.chartComposite = dc.compositeChart('#chartLine');
+    this.chartComposite = dc.compositeChart('#compositeChart');
     this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
@@ -67,7 +66,6 @@ class LiveConfig extends Component {
         top: 30, right: 50, bottom: 25, left: 40,
       })
       .dimension(this.dimension)
-      .rangeChart(this.chartRange)
       .x(d3.scaleTime().domain(this.fullDomain))
       .xUnits(d3.timeDay)
       .brushOn(false)
@@ -82,20 +80,6 @@ class LiveConfig extends Component {
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'black'),
       ]);
-    this.chartRange
-      .width(null)
-      .height(null)
-      .margins({
-        top: 0, right: 50, bottom: 20, left: 40,
-      })
-      .dimension(this.dimension)
-      .group(this.group)
-      .x(d3.scaleTime().domain(this.fullDomain))
-      .xUnits(d3.timeDay)
-      .centerBar(true)
-      .gap(1)
-      .round(d3.timeMinute.round)
-      .alwaysUseRounding(true);
     dc.renderAll();
   }
 
@@ -103,11 +87,11 @@ class LiveConfig extends Component {
     const { data } = this.state;
     this.ndx.remove();
     this.ndx.add(data);
+    console.info("new data to display ["+data+"]");
     const fromDatetime = new Date();
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
     this.fullDomain = [fromDatetime, new Date()];
     this.chartComposite.x(d3.scaleTime().domain(this.fullDomain));
-    this.chartRange.x(d3.scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
 
@@ -143,8 +127,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="chartLine" />
-        <div id="chartRange" />
+        <div id="compositeChart" />
       </section>
     );
   }
