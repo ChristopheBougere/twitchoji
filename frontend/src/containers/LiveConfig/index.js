@@ -38,7 +38,7 @@ class LiveConfig extends Component {
       token: auth.token,
     });
     const now = new Date();
-    const endDateTime = now.setMinutes(now.getMinutes + 1);
+    const endDateTime = now.setMinutes(now.getMinutes() + 1);
     const fromDatetime = now.setMinutes(now.getMinutes() - 30);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
