@@ -10,73 +10,19 @@ const {
   TWITCH_CLIENT_ID,
 } = process.env;
 
-async function fetchItems(streamId, fromDate) {
+async function fetchItem(streamId, datetime) {
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
-  const items = [];
-  let lastEvaluatedKey;
-  do {
-    // eslint-disable-next-line no-await-in-loop
-    const { Items, LastEvaluatedKey } = await dynamoDoc.query({
-      TableName: TABLE_NAME,
-      KeyConditionExpression: '#streamId = :streamId AND #datetime >= :datetime',
-      ExpressionAttributeNames: {
-        '#streamId': 'streamId',
-        '#datetime': 'datetime',
-      },
-      ExpressionAttributeValues: {
-        ':streamId': streamId,
-        ':datetime': fromDate,
-      },
-    }).promise();
-    items.push(...Items);
-    lastEvaluatedKey = LastEvaluatedKey;
-  } while (lastEvaluatedKey);
-  return items;
+  const { Item: item } = await dynamoDoc.get({
+    TableName: TABLE_NAME,
+    Key: {
+      streamId,
+      datetime,
+    },
+  }).promise();
+  return item;
 }
 
-function computeAverageMood(items, streamId, fromDate) {
-  const inital = {
-    number: 0,
-    neutral: 0,
-    happy: 0,
-    sad: 0,
-    angry: 0,
-    fearful: 0,
-    disgusted: 0,
-    surprised: 0,
-  };
-  const averageMood = items.reduce((acc, curr) => {
-    acc.number += curr.number;
-    acc.neutral += curr.mood.neutral;
-    acc.happy += curr.mood.happy;
-    acc.sad += curr.mood.sad;
-    acc.angry += curr.mood.angry;
-    acc.fearful += curr.mood.fearful;
-    acc.disgusted += curr.mood.disgusted;
-    acc.surprised += curr.mood.surprised;
-    return acc;
-  }, inital);
-
-  const number = averageMood.number;
-  delete averageMood.number;
-  if (number) {
-    averageMood.neutral /= number;
-    averageMood.happy /= number;
-    averageMood.sad /= number;
-    averageMood.angry /= number;
-    averageMood.fearful /= number;
-    averageMood.disgusted /= number;
-    averageMood.surprised /= number;
-  }
-  return {
-    mood: averageMood,
-    datetime: fromDate,
-    number: number || 0,
-    streamId,
-  };
-}
-
-async function makeRequest(streamId, averageMood) {
+async function makeRequest(streamId, item) {
   // Generate JWT
   const token = jwt.sign({
     role: 'external',
@@ -101,7 +47,7 @@ async function makeRequest(streamId, averageMood) {
       },
       body: JSON.stringify({
         content_type: 'application/json',
-        message: JSON.stringify(averageMood),
+        message: JSON.stringify(item),
         targets: ['broadcast'],
       }),
       resolveWithFullResponse: true,
@@ -115,18 +61,14 @@ async function makeRequest(streamId, averageMood) {
   }
 }
 
-async function broadcastAverageMood(streamId, fromDate) {
-  // Fetch last items from DynamoDB
-  console.log(`Stream ${streamId}: fetching items since ${fromDate}`);
-  const items = await fetchItems(streamId, fromDate);
-  console.log(`Stream ${streamId} items: ${JSON.stringify(items, null, 2)}`);
-
-  // Compute average mood
-  const averageMood = computeAverageMood(items, streamId, fromDate);
-  console.log(`Stream ${streamId} average mood: ${JSON.stringify(averageMood, null, 2)}`);
+async function broadcastAverageMood(streamId, datetime) {
+  // Fetch last item from DynamoDB
+  console.log(`Stream ${streamId}: fetching item since ${datetime}`);
+  const item = await fetchItem(streamId, datetime);
+  console.log(`Stream ${streamId} item: ${JSON.stringify(item, null, 2)}`);
 
   // Then broadcast using Twitch PubSub
-  await makeRequest(streamId, averageMood);
+  await makeRequest(streamId, item);
 }
 
 module.exports = broadcastAverageMood;

@@ -78,7 +78,6 @@ class LiveConfig extends Component {
     this.chartComposite
       .width(null)
       .height(null)
-      .transitionDuration(1000)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })

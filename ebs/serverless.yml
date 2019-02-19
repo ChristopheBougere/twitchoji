@@ -24,7 +24,6 @@ provider:
   environment:
     TABLE_NAME: ${self:custom.moodsTableName}
     JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
-    RANGE_SECONDS: 2
     TWITCH_CLIENT_ID: hidden
     TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions
     TWITCH_OWNER_ID: hidden
