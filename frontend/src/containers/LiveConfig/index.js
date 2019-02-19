@@ -67,6 +67,8 @@ class LiveConfig extends Component {
     this.chartComposite
       .width(null)
       .height(null)
+      .transitionDuration(1000)
+      .mouseZoomable(true)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
@@ -75,8 +77,6 @@ class LiveConfig extends Component {
       .xUnits(timeDay)
       .brushOn(false)
       .elasticY(true)
-      .elasticX(true)
-      .mouseZoomable(true)
       .renderHorizontalGridLines(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .compose([
@@ -86,7 +86,10 @@ class LiveConfig extends Component {
         this.getLineChart('disgusted', 'green'),
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'black'),
-      ]);
+      ])
+      .title(function (d) {
+        log(d);
+    });
     dc.renderAll();
   }
 
