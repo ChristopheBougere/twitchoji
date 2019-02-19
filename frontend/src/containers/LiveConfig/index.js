@@ -62,6 +62,7 @@ class LiveConfig extends Component {
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
     this.fullDomain = [fromDatetime, new Date()];
+    console.log(`initCharts`);
 
     this.chartComposite
       .width(null)
