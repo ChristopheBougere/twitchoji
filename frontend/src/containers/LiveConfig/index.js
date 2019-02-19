@@ -40,7 +40,12 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
-    this.data.push(JSON.parse(content));
+    this.setState(prevState => ({
+      data: [
+        ...prevState.data,
+        JSON.parse(content),
+      ],
+    }));
     this.updateCharts();
   }
 
@@ -67,11 +72,11 @@ class LiveConfig extends Component {
         top: 30, right: 50, bottom: 25, left: 40,
       })
       .dimension(this.dimension)
-      .rangeChart(this.chartRange)
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
       .brushOn(false)
       .elasticY(true)
+      .elasticX(true)
       .renderHorizontalGridLines(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .compose([
@@ -82,20 +87,6 @@ class LiveConfig extends Component {
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'black'),
       ]);
-    this.chartRange
-      .width(null)
-      .height(null)
-      .margins({
-        top: 0, right: 50, bottom: 20, left: 40,
-      })
-      .dimension(this.dimension)
-      .group(this.group)
-      .x(scaleTime().domain(this.fullDomain))
-      .xUnits(timeDay)
-      .centerBar(true)
-      .gap(1)
-      .round(timeMinute.round)
-      .alwaysUseRounding(true);
     dc.renderAll();
   }
 
@@ -107,7 +98,6 @@ class LiveConfig extends Component {
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
     this.fullDomain = [fromDatetime, new Date()];
     this.chartComposite.x(scaleTime().domain(this.fullDomain));
-    this.chartRange.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
 
