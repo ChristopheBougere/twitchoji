@@ -77,6 +77,7 @@ class LiveConfig extends Component {
       .brushOn(false)
       .elasticY(true)
       .elasticX(true)
+      .mouseZoomable(true)
       .renderHorizontalGridLines(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .compose([
