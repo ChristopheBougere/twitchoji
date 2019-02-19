@@ -54,16 +54,7 @@ class LiveConfig extends Component {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
       .colors(color)
-      .renderTitle(true)
-      .title(function (d) {
-        console.log(`d ${JSON.stringify(d)}`);
-        return d;
-      })
-      .renderLabel(true)
-      .label(function (p) {
-        console.log(`d label ${JSON.stringify(d)}`);
-        return d;
-      });
+      .renderTitle(true);
   }
 
   initCharts(fromDatetime) {
@@ -88,6 +79,10 @@ class LiveConfig extends Component {
       .brushOn(false)
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
+      .title(function (d) {
+        console.log(`d ${JSON.stringify(d)}`);
+        return d;
+      })
       .compose([
         this.getLineChart('fearful', 'blue'),
         this.getLineChart('sad', 'pink'),
