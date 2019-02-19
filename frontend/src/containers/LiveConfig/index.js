@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import dc, { crossfilter } from 'dc';
 import { scaleTime } from 'd3-scale';
-import { timeDay, timeMinute } from 'd3-time';
+import { timeDay } from 'd3-time';
 import 'dc/dc.css';
 import './index.css';
 
 import constants from '../../constants';
 
 class LiveConfig extends Component {
+  static formatDatetime(dateObj) {
+    return `${dateObj.toISOString().split('.')[0]}Z`;
+  }
+
   constructor(props, context) {
     super(props, context);
 
@@ -20,8 +24,8 @@ class LiveConfig extends Component {
 
     this.styles = {
       compositeChar: {
-        overflowX: 'hidden';
-      }
+        overflowX: 'hidden',
+      },
     };
   }
 
@@ -34,7 +38,7 @@ class LiveConfig extends Component {
       token: auth.token,
     });
     const now = new Date();
-    const endDateTime = now.setMinutes(now.getMinutes +1);
+    const endDateTime = now.setMinutes(now.getMinutes + 1);
     const fromDatetime = now.setMinutes(now.getMinutes() - 30);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
@@ -57,10 +61,6 @@ class LiveConfig extends Component {
     this.updateCharts();
   }
 
-  formatDatetime(dateObj) {
-    return `${dateObj.toISOString().split('.')[0]}Z`;
-  }
-  
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
@@ -88,8 +88,9 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title((d) => {
-        const date =this.formatDatetime(d.key)
-        const number = this.state.data.find( i => i.datetime === date).number;
+        const { data: newData } = this.state;
+        const date = LiveConfig.formatDatetime(d.key);
+        const { number } = newData.find(i => i.datetime === date);
         return `Total users: ${number}`;
       })
       .compose([
@@ -99,7 +100,7 @@ class LiveConfig extends Component {
         this.getLineChart('disgusted', 'green'),
         this.getLineChart('angry', 'red'),
         this.getLineChart('surprised', 'blue'),
-      ])
+      ]);
     dc.renderAll();
   }
 
@@ -107,7 +108,7 @@ class LiveConfig extends Component {
     const { data } = this.state;
     this.ndx.remove();
     this.ndx.add(data);
-    console.log (`data updated ${JSON.stringify(data)}`);
+    console.log(`data updated ${JSON.stringify(data)}`);
     const now = new Date();
     const endDatetime = now.setMinutes(now.getMinutes() + 1);
     const fromDatetime = now.setMinutes(now.getMinutes() - 30);
