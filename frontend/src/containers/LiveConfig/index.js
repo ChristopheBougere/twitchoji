@@ -23,7 +23,7 @@ class LiveConfig extends Component {
     this.onAuthorized = this.onAuthorized.bind(this);
 
     this.styles = {
-      compositeChar: {
+      compositeChart: {
         overflow: 'hidden',
       },
     };
@@ -71,7 +71,7 @@ class LiveConfig extends Component {
 
   initCharts(fromDatetime, endDate) {
     const { data } = this.state;
-    this.chartComposite = dc.compositeChart('#compositeChar');
+    this.chartComposite = dc.compositeChart('#compositeChart');
     this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
@@ -79,7 +79,7 @@ class LiveConfig extends Component {
 
     this.chartComposite
       .width(null)
-      .height(300)
+      .height(275)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
@@ -155,7 +155,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="compositeChar" style={this.styles.compositeChart} />
+        <div id="compositeChart" style={this.styles.compositeChart} />
       </section>
     );
   }
