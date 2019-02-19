@@ -7,6 +7,7 @@ module.exports = (api) => {
       }],
       ['minify', {
         keepFnName: true,
+        keepClassName: true,
       }],
       ['@babel/preset-react'],
     ],

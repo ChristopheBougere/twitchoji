@@ -17,6 +17,12 @@ class LiveConfig extends Component {
     };
     this.onBroadcast = this.onBroadcast.bind(this);
     this.onAuthorized = this.onAuthorized.bind(this);
+
+    this.styles = {
+      compositeChar: {
+        overflowX: 'hidden';
+      }
+    };
   }
 
   componentDidMount() {
@@ -143,7 +149,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="compositeChar" />
+        <div id="compositeChar" style={this.styles.compositeChart} />
       </section>
     );
   }
