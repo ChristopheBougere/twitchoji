@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import dc, {d3, crossfilter} from 'dc';
+import dc, { crossfilter, d3 } from 'dc';
+import { scaleTime } from 'd3-scale';
 import 'dc/dc.css';
 
 import constants from '../../constants';
@@ -66,7 +67,7 @@ class LiveConfig extends Component {
       })
       .dimension(this.dimension)
       .rangeChart(this.chartRange)
-      .x(d3.scaleTime().domain(this.fullDomain))
+      .x(scaleTime().domain(this.fullDomain))
       .xUnits(d3.timeDay)
       .brushOn(false)
       .elasticY(true)
@@ -104,8 +105,8 @@ class LiveConfig extends Component {
     const fromDatetime = new Date();
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
     this.fullDomain = [fromDatetime, new Date()];
-    this.chartComposite.x(d3.scaleTime().domain(this.fullDomain));
-    this.chartRange.x(d3.scaleTime().domain(this.fullDomain));
+    this.chartComposite.x(scaleTime().domain(this.fullDomain));
+    this.chartRange.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
   }
 
