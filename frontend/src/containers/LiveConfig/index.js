@@ -20,7 +20,7 @@ class LiveConfig extends Component {
 
     this.styles = {
       compositeChar: {
-        overflowX: 'hidden';
+        overflowX: 'hidden',
       }
     };
   }
@@ -33,13 +33,17 @@ class LiveConfig extends Component {
     this.setState({
       token: auth.token,
     });
-    const now = new Date();
-    const endDateTime = now.setMinutes(now.getMinutes +1);
-    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
+    const fromDateTime = new Date();
+    const endDatetime = fromDateTime;
+    fromDateTime.setMinutes(fromDateTime.getMinutes() - 30);
+    endDatetime.setMinutes(endDatetime.getMinutes() + 1);
     const data = await this.loadData({
       datetime: fromDatetime.toISOString(),
       operator: '>',
     });
+    data.map(item => item.mood.forEach(element => {
+      element = element * 100;
+    }));
     this.setState({
       data,
     });
@@ -48,6 +52,7 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
+    content.mood.forEach(x => x * 100);
     this.setState(prevState => ({
       data: [
         ...prevState.data,
@@ -60,7 +65,7 @@ class LiveConfig extends Component {
   formatDatetime(dateObj) {
     return `${dateObj.toISOString().split('.')[0]}Z`;
   }
-  
+
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
@@ -78,7 +83,6 @@ class LiveConfig extends Component {
     this.chartComposite
       .width(null)
       .height(null)
-      .transitionDuration(1000)
       .margins({
         top: 30, right: 50, bottom: 25, left: 40,
       })
@@ -89,8 +93,8 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .title((d) => {
-        const date =this.formatDatetime(d.key)
-        const number = this.state.data.find( i => i.datetime === date).number;
+        const date = this.formatDatetime(d.key)
+        const number = this.state.data.find(i => i.datetime === date).number;
         return `Total users: ${number}`;
       })
       .compose([
@@ -108,10 +112,11 @@ class LiveConfig extends Component {
     const { data } = this.state;
     this.ndx.remove();
     this.ndx.add(data);
-    console.log (`data updated ${JSON.stringify(data)}`);
-    const now = new Date();
-    const endDatetime = now.setMinutes(now.getMinutes() + 1);
-    const fromDatetime = now.setMinutes(now.getMinutes() - 30);
+    console.log(`data updated ${JSON.stringify(data)}`);
+    const fromDateTime = new Date();
+    const endDatetime = fromDateTime;
+    fromDateTime.setMinutes(fromDateTime.getMinutes() - 30);
+    endDatetime.setMinutes(endDatetime.getMinutes() + 1);
     this.fullDomain = [fromDatetime, endDatetime];
     this.chartComposite.x(scaleTime().domain(this.fullDomain));
     dc.redrawAll();
