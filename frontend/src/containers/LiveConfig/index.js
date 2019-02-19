@@ -54,6 +54,7 @@ class LiveConfig extends Component {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
       .colors(color)
+      .renderTitle(true)
       .title(function (d) {
         console.log(`d ${JSON.stringify(d)}`);
         return d;
