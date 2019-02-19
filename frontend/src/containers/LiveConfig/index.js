@@ -57,8 +57,7 @@ class LiveConfig extends Component {
 
   initCharts(fromDatetime) {
     const { data } = this.state;
-    this.chartRange = dc.barChart('#chartRange');
-    this.chartComposite = dc.compositeChart('#chartLine');
+    this.chartComposite = dc.compositeChart('#compositeChar');
     this.ndx = crossfilter(data);
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
@@ -134,8 +133,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="chartLine" />
-        <div id="chartRange" />
+        <div id="compositeChar" />
       </section>
     );
   }
