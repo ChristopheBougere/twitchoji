@@ -62,7 +62,6 @@ class LiveConfig extends Component {
     this.dimension = this.ndx.dimension(d => new Date(d.datetime));
     this.group = this.dimension.group().reduceSum(d => d.number);
     this.fullDomain = [fromDatetime, new Date()];
-    console.log(`initCharts`);
 
     this.chartComposite
       .width(null)
@@ -74,7 +73,7 @@ class LiveConfig extends Component {
       .dimension(this.dimension)
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
-      .brushOn(false)
+      .brushOn(true)
       .elasticY(true)
       .elasticX(true)
       .mouseZoomable(true)
