@@ -45,9 +45,11 @@ class LiveConfig extends Component {
       datetime: fromDatetime.toISOString(),
       operator: '>',
     });
-    data.map(item => item.mood.forEach(element => {
-      element = element * 100;
-    }));
+    data.forEach((item) => {
+      Object.keys(item.mood).forEach((m) => {
+        item.mood[m] *= 100; // eslint-disable-line no-param-reassign
+      });
+    });
     this.setState({
       data,
     });
@@ -57,11 +59,15 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
-    content.mood.forEach(x => x * 100);
+    const item = JSON.parse(content);
+    Object.keys(item.mood).forEach((m) => {
+      item.mood[m] *= 100;
+    });
+
     this.setState(prevState => ({
       data: [
         ...prevState.data,
-        JSON.parse(content),
+        item,
       ],
     }));
     this.updateCharts();
