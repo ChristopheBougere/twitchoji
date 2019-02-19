@@ -58,6 +58,11 @@ class LiveConfig extends Component {
       .title(function (d) {
         console.log(`d ${JSON.stringify(d)}`);
         return d;
+      })
+      .renderLabel(true)
+      .label(function (p) {
+        console.log(`d label ${JSON.stringify(d)}`);
+        return d;
       });
   }
 
