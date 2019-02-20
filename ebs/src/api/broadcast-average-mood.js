@@ -66,9 +66,10 @@ async function broadcastAverageMood(streamId, datetime) {
   console.log(`Stream ${streamId}: fetching item since ${datetime}`);
   const item = await fetchItem(streamId, datetime);
   console.log(`Stream ${streamId} item: ${JSON.stringify(item, null, 2)}`);
-
-  // Then broadcast using Twitch PubSub
-  await makeRequest(streamId, item);
+  if (item) {
+    // Then broadcast using Twitch PubSub
+    await makeRequest(streamId, item);
+  }
 }
 
 module.exports = broadcastAverageMood;
