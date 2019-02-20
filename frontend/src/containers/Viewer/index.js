@@ -22,6 +22,7 @@ class Viewer extends Component {
       lastUpdate: null,
       modelsLoaded: false,
       detecting: false,
+      postDisabled: false,
     };
     this.onBroadcast = this.onBroadcast.bind(this);
     this.onAuthorized = this.onAuthorized.bind(this);
@@ -248,11 +249,24 @@ class Viewer extends Component {
   }
 
   async postMood(mood) {
-    const { token } = this.state;
+    const { token, postDisabled } = this.state;
+    if (postDisabled) {
+      console.warn('Too many requests.');
+      return {};
+    }
     if (!token) {
       console.warn('Unable to post mood: not authorized.');
       return {};
     }
+    // Disable sending mood for 0.9 second
+    this.setState({
+      postDisabled: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        postDisabled: false,
+      });
+    }, 900);
     const res = await fetch(constants.EBS_ENDPOINT, {
       method: 'POST',
       headers: new Headers({
