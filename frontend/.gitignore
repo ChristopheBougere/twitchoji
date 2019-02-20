@@ -3,7 +3,6 @@
 
 # production build
 public/assets/app.js
-public/assets/app.css
 
 # misc
 .idea
