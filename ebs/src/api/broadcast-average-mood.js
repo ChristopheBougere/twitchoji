@@ -22,6 +22,7 @@ async function fetchItem(streamId) {
       ':streamId': streamId,
     },
     Limit: 2,
+    ScanIndexForward: false,
   }).promise();
   if (items && items.length === 2) {
     return items[1];
