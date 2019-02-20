@@ -44,12 +44,7 @@ async function writeMoodAndBroadcast(mood, streamId, datetime) {
   }).promise();
   console.log('Item added. Now broadcasting average mood');
   // Then broadcast average mood
-  const fromDate = new Date(datetime);
-  fromDate.setSeconds(fromDate.getSeconds() - 1);
-  console.log(datetime, fromDate);
-  const datetimeStr = formatDatetime(fromDate);
-  console.log(`From date ${datetimeStr}`);
-  await broadcastAverageMood(streamId, datetimeStr);
+  await broadcastAverageMood(streamId);
   console.log('Broadcast done.');
 }
 

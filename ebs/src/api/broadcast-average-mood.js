@@ -10,16 +10,24 @@ const {
   TWITCH_CLIENT_ID,
 } = process.env;
 
-async function fetchItem(streamId, datetime) {
+async function fetchItem(streamId) {
   const dynamoDoc = new AWS.DynamoDB.DocumentClient();
-  const { Item: item } = await dynamoDoc.get({
+  const { Items: items } = await dynamoDoc.query({
     TableName: TABLE_NAME,
-    Key: {
-      streamId,
-      datetime,
+    KeyConditionExpression: '#streamId = :streamId',
+    ExpressionAttributeNames: {
+      '#streamId': 'streamId',
     },
+    ExpressionAttributeValues: {
+      ':streamId': streamId,
+    },
+    Limit: 2,
+    ScanIndexForward: true,
   }).promise();
-  return item;
+  if (items && items.length === 2) {
+    return items[1];
+  }
+  return null;
 }
 
 async function makeRequest(streamId, item) {
@@ -61,10 +69,10 @@ async function makeRequest(streamId, item) {
   }
 }
 
-async function broadcastAverageMood(streamId, datetime) {
+async function broadcastAverageMood(streamId) {
   // Fetch last item from DynamoDB
-  console.log(`Stream ${streamId}: fetching item since ${datetime}`);
-  const item = await fetchItem(streamId, datetime);
+  console.log(`Stream ${streamId}: fetching last item`);
+  const item = await fetchItem(streamId);
   console.log(`Stream ${streamId} item: ${JSON.stringify(item, null, 2)}`);
   if (item) {
     // Then broadcast using Twitch PubSub

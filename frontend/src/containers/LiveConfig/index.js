@@ -59,7 +59,13 @@ class LiveConfig extends Component {
   }
 
   async onBroadcast(target, contentType, content) {
+    const { data } = this.state;
+    console.log('broadcast', content);
     const item = JSON.parse(content);
+    // If we already have the item, don't add it
+    if (data.find(d => d.datetime === item.datetime)) {
+      return;
+    }
     Object.keys(item.mood).forEach((m) => {
       item.mood[m] *= 100;
     });
@@ -121,7 +127,6 @@ class LiveConfig extends Component {
     const { data } = this.state;
     this.ndx.remove();
     this.ndx.add(data);
-    console.log(`data updated ${JSON.stringify(data)}`);
 
     const fromDatetime = new Date();
     fromDatetime.setMinutes(fromDatetime.getMinutes() - 30);
