@@ -107,6 +107,7 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .yAxisLabel("mood %")
+      .interpolate(basis)
       .title((d) => {
         const { data: newData } = this.state;
         const date = LiveConfig.formatDatetime(d.key);
