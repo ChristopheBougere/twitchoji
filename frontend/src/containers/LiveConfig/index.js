@@ -81,9 +81,9 @@ class LiveConfig extends Component {
 
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
+      .curve(d3.curveCatmullRom.alpha(0.5))
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color)
-      .curve(d3.curveBasis);
+      .colors(color);
   }
 
   initCharts(fromDatetime, endDate) {
