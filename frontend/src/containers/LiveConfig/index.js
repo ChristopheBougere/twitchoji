@@ -100,16 +100,13 @@ class LiveConfig extends Component {
       .brushOn(false)
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
+      .yAxisLabel("mood %")
       .title((d) => {
         const { data: newData } = this.state;
         const date = LiveConfig.formatDatetime(d.key);
         const { number } = newData.find(i => i.datetime === date);
         return `Total users: ${number}`;
       })
-      .legend.disptach.on('legendClick', (d,v,c) =>{
-        log(`d: ${JSON.stringify(d)} v: ${JSON.stringify(v)} c: ${JSON.stringify(c)}`);
-        return; //do nothing
-        })
       .compose([
         this.getLineChart('fearful', 'black'),
         this.getLineChart('sad', 'pink'),
