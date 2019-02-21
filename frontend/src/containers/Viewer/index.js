@@ -102,8 +102,8 @@ class Viewer extends Component {
   async onStartFaceApiClick() {
     const { modelsLoaded } = this.state;
     if (!modelsLoaded) {
-      await faceapi.loadFaceExpressionModel('/models');
-      await faceapi.loadTinyFaceDetectorModel('/models');
+      await faceapi.loadFaceExpressionModel('models');
+      await faceapi.loadTinyFaceDetectorModel('models');
       this.setState({
         modelsLoaded: true,
       });
