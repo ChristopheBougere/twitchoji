@@ -82,7 +82,8 @@ class LiveConfig extends Component {
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color);
+      .colors(color)
+      .interpolate(basis);
   }
 
   initCharts(fromDatetime, endDate) {
@@ -107,7 +108,6 @@ class LiveConfig extends Component {
       .elasticY(true)
       .legend(dc.legend().autoItemWidth(true).horizontal(true))
       .yAxisLabel("mood %")
-      .interpolate(basis)
       .title((d) => {
         const { data: newData } = this.state;
         const date = LiveConfig.formatDatetime(d.key);
