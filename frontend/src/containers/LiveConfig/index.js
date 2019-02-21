@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import dc, { crossfilter } from 'dc';
 import { scaleTime } from 'd3-scale';
 import { timeDay } from 'd3-time';
+import { curveBasis } from 'd3-shape';
 import 'dc/dc.css';
 import './index.css';
 
@@ -81,7 +82,7 @@ class LiveConfig extends Component {
 
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
-      .curve(d3.curveCatmullRom.alpha(0.5))
+      .curve(curveBasis)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
       .colors(color);
   }
