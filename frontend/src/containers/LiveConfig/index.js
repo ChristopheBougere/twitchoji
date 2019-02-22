@@ -82,6 +82,7 @@ class LiveConfig extends Component {
 
   getLineChart(mood, color) {
     return dc.lineChart(this.chartComposite)
+      .curve(curveBasis)
       .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
       .colors(color);
   }
@@ -103,7 +104,6 @@ class LiveConfig extends Component {
       .transitionDuration(0)
       .dimension(this.dimension)
       .x(scaleTime().domain(this.fullDomain))
-      .curve(curveBasis)
       .xUnits(timeDay)
       .brushOn(false)
       .elasticY(true)
