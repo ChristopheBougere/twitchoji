@@ -24,7 +24,7 @@ class LiveConfig extends Component {
     this.onAuthorized = this.onAuthorized.bind(this);
 
     this.styles = {
-      compositeChart: {
+      seriesChart: {
         overflow: 'hidden',
       },
     };
@@ -46,13 +46,19 @@ class LiveConfig extends Component {
       datetime: fromDatetime.toISOString(),
       operator: '>',
     });
+    const rows = [];
     data.forEach((item) => {
-      Object.keys(item.mood).forEach((m) => {
-        item.mood[m] *= 100; // eslint-disable-line no-param-reassign
+      Object.keys(item.mood).forEach((mood) => {
+        rows.push({
+          datetime: item.datetime,
+          mood,
+          value: item[mood] * 100,
+          number: item.number,
+        });
       });
     });
     this.setState({
-      data,
+      data: rows,
     });
 
     this.initCharts(fromDatetime, toDatetime);
@@ -67,62 +73,88 @@ class LiveConfig extends Component {
     if (data.find(d => d.datetime === item.datetime)) {
       return;
     }
-    Object.keys(item.mood).forEach((m) => {
-      item.mood[m] *= 100;
+    const rows = [];
+    Object.keys(item.mood).forEach((mood) => {
+      rows.push({
+        datetime: item.datetime,
+        mood,
+        value: item[mood] * 100,
+        number: item.number,
+      });
     });
 
     this.setState(prevState => ({
       data: [
         ...prevState.data,
-        item,
+        ...rows,
       ],
     }));
     this.updateCharts();
   }
 
-  getLineChart(mood, color) {
-    return dc.lineChart(this.chartComposite)
-      .curve(curveBasis)
-      .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
-      .colors(color);
-  }
+  // getLineChart(mood, color) {
+  //   return dc.lineChart(this.chartComposite)
+  //     .curve(curveBasis)
+  //     .group(this.dimension.group().reduceSum(d => d.mood[mood] / d.number), mood)
+  //     .colors(color);
+  // }
 
   initCharts(fromDatetime, endDate) {
     const { data } = this.state;
-    this.chartComposite = dc.compositeChart('#compositeChart');
+    this.chartComposite = dc.seriesChart('#seriesChart');
     this.ndx = crossfilter(data);
-    this.dimension = this.ndx.dimension(d => new Date(d.datetime));
+    this.dimension = this.ndx.dimension(d => [d.mood, new Date(d.datetime)]);
     this.group = this.dimension.group().reduceSum(d => d.number);
     this.fullDomain = [fromDatetime, endDate];
 
     this.chartComposite
       .width(null)
       .height(275)
-      .margins({
-        top: 30, right: 50, bottom: 25, left: 40,
-      })
-      .transitionDuration(0)
-      .dimension(this.dimension)
+      .chart(c => console.log(c) && dc.lineChart(c).curve(curveBasis))
       .x(scaleTime().domain(this.fullDomain))
       .xUnits(timeDay)
       .brushOn(false)
+      .yAxisLabel('Mood %')
+      // .clipPadding(10)
       .elasticY(true)
-      .legend(dc.legend().autoItemWidth(true).horizontal(true))
-      .yAxisLabel("mood %")
-      .title((d) => {
-        const { data: newData } = this.state;
-        const date = LiveConfig.formatDatetime(d.key);
-        const { number } = newData.find(i => i.datetime === date);
-        return `Total users: ${number}`;
-      })
-      .compose([
-        this.getLineChart('fearful', 'black'),
-        this.getLineChart('sad', 'pink'),
-        this.getLineChart('happy', 'orange'),
-        this.getLineChart('disgusted', 'green'),
-        this.getLineChart('angry', 'red'),
-        this.getLineChart('surprised', 'blue'),
-      ]);
+      .dimension(this.dimension)
+      .group(this.group)
+      // .mouseZoomable(true)
+      .seriesAccessor(d => d.key[0]) // mood
+      .keyAccessor(d => d.key[1]) // datetime
+      .valueAccessor(d => d.value) // mood %
+      .legend(dc.legend().autoItemWidth(true).horizontal(true));
+    // .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+  // chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
+  // chart.margins().left += 40;
+    // this.chartComposite
+    //   .width(null)
+    //   .height(275)
+    //   .margins({
+    //     top: 30, right: 50, bottom: 25, left: 40,
+    //   })
+    //   .transitionDuration(0)
+    //   .dimension(this.dimension)
+    //   .x(scaleTime().domain(this.fullDomain))
+    //   .xUnits(timeDay)
+    //   .brushOn(false)
+    //   .elasticY(true)
+    //   .legend(dc.legend().autoItemWidth(true).horizontal(true))
+    //   .yAxisLabel("mood %")
+    //   .title((d) => {
+    //     const { data: newData } = this.state;
+    //     const date = LiveConfig.formatDatetime(d.key);
+    //     const { number } = newData.find(i => i.datetime === date);
+    //     return `Total users: ${number}`;
+    //   })
+    //   .compose([
+    //     this.getLineChart('fearful', 'black'),
+    //     this.getLineChart('sad', 'pink'),
+    //     this.getLineChart('happy', 'orange'),
+    //     this.getLineChart('disgusted', 'green'),
+    //     this.getLineChart('angry', 'red'),
+    //     this.getLineChart('surprised', 'blue'),
+    //   ]);
     dc.renderAll();
   }
 
@@ -173,7 +205,7 @@ class LiveConfig extends Component {
   render() {
     return (
       <section>
-        <div id="compositeChart" style={this.styles.compositeChart} />
+        <div id="seriesChart" style={this.styles.seriesChart} />
       </section>
     );
   }
