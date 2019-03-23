@@ -1,0 +1,5 @@
+default:
+  JWT_SECRET: qwertyuiop # TO REPLACE
+  TWITCH_OWNER_ID: qwertyuiop # TO REPLACE
+  TWITCH_CLIENT_ID: qwertyuiop # TO REPLACE
+  EPSAGON_TOKEN: qwertyuiop # TO REPLACE

@@ -23,10 +23,10 @@ provider:
               - '*'
   environment:
     TABLE_NAME: ${self:custom.moodsTableName}
-    JWT_SECRET: hidden/hidden+hidden+hidden/hidden=
-    TWITCH_CLIENT_ID: hidden
+    JWT_SECRET: ${self:custom.env.JWT_SECRET}
+    TWITCH_CLIENT_ID: ${self:custom.env.TWITCH_CLIENT_ID}
     TWITCH_API_ENDPOINT: https://api.twitch.tv/extensions
-    TWITCH_OWNER_ID: hidden
+    TWITCH_OWNER_ID: ${self:custom.env.TWITCH_OWNER_ID}
     MAX_GET_LIMIT: 600
     MAX_UPDATES: 100
 
@@ -74,8 +74,9 @@ package:
     - .dynamodb/**
 
 custom:
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
   epsagon:
-    token: hidden
+    token: ${self:custom.env.EPSAGON_TOKEN}
     appName: ${self:service}
   moodsTableArn:
     Fn::GetAtt: [MoodsTable, Arn]

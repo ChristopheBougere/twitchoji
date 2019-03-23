@@ -17,8 +17,8 @@
   "keywords": [
     "twitch"
   ],
-  "author": "Christophe Bougère <christophe.bougere@gmail.com>",
-  "license": "UNLICENSED",
+  "author": "Twitchoji",
+  "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/ChristopheBougere/twitchoji/issues"
   },

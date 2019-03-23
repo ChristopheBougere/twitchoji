@@ -1,9 +1,13 @@
 # Twitchoji Extension Backend Service
 
+The backend is deployed on AWS using Serverless framework. It i s composed of a single Lambda with an API Gateway endpoint, and a DynamoDB table.
+
 ## Install
 ```bash
 npm install
+cp env_example.yml env.yml
 ```
+Fill the `env.yml` file with your parameters.
 
 ## Deploy
 ```bash

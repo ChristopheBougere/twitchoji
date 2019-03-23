@@ -4,4 +4,5 @@ node_modules
 epsagon_handler
 .DS_Store
 Live mood.json
-
+env.yml
+.env
