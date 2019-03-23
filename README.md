@@ -1,5 +1,5 @@
 # Live Mood (a.k.a. Twitchoji)
-This repository contains the code of our our submission for the [Twitch extension challenge](https://twitchdev.devpost.com/).
+This repository contains the code of our our submission ([Loic Szpieg](https://github.com/loic-sz) and myself) for the [Twitch extension challenge](https://twitchdev.devpost.com/).
 You can get the details about the project [on the DevPost project page](https://devpost.com/software/live-mood-2b5arl).
 The LiveMood extension is [available on Twitch](https://www.twitch.tv/ext/h2c9fot9q8wp04jt9ho7thei0upodf-0.0.6).
 
